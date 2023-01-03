@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "outDir": "dist",
+        "downlevelIteration": true,
+        "target": "ES5",
+        "sourceMap": true
+    }
+}

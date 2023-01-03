@@ -1,0 +1,28 @@
+{
+  "name": "@discordnova/nova-quickstart",
+  "version": "1.0.0",
+  "description": "Simple example of a nova deployment",
+  "main": "index.js",
+  "repository": "https://github.com/discordnova/nova-quickstart",
+  "author": "MatthieuCoder",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/builders": "^1.4.0",
+    "@discordjs/rest": "^1.5.0",
+    "@types/node": "^18.11.18",
+    "@types/ping": "^0.4.1",
+    "discord-api-types": "^0.37.25",
+    "events": "^3.3.0",
+    "glob-regex": "^0.3.2",
+    "nats": "^2.10.2",
+    "ping": "^0.4.2",
+    "source-map-support": "^0.5.21",
+    "type-fest": "^3.5.0",
+    "typescript": "^4.9.4"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc || true && node dist",
+    "register": "tsc || true && node dist/register.js"
+  }
+}

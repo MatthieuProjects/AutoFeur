@@ -6,22 +6,30 @@ import {
   InteractionType,
   RESTPostAPIApplicationCommandsJSONBody,
   RESTPostAPIChatInputApplicationCommandsJSONBody,
-  RESTPostAPIWebhookWithTokenJSONBody,
   Routes,
 } from "discord-api-types/v10";
-import { rest } from "../rest";
 
 export * from "./builder";
 
+export type PromiseLike<T> = T | Promise<T>;
+/**
+ * A simple function that executes a slash command.
+ */
 export type HandlerFn = (
   data: APIApplicationCommandInteraction
 ) => PromiseLike<APIInteractionResponse>;
-export type PromiseLike<T> = T | Promise<T>;
+
 export type Command = {
   json: RESTPostAPIChatInputApplicationCommandsJSONBody;
   handler: HandlerFn;
 };
 
+/**
+ * Register all the commands to discord
+ * @param commands List of commands to register
+ * @param rest Rest api instance
+ * @param applicationId Current application id
+ */
 export const registerCommands = async (
   commands: Iterable<Command>,
   rest: REST,
@@ -34,6 +42,11 @@ export const registerCommands = async (
   }
 };
 
+/**
+ * Creates a new handler to handle the slash commands.
+ * @param commands List of commands to handle
+ * @returns Handler function
+ */
 export const buildHandler = (commands: Iterable<Command>) => {
   let internal: Map<String, Command> = new Map();
   for (const command of commands) {

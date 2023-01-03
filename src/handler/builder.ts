@@ -1,6 +1,9 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { Command, HandlerFn } from ".";
 
+/**
+ * Simple wrapper around the SlashCommandBuilder provided by Discord.js 
+ */
 export class CommandBuilder extends SlashCommandBuilder {
   private _handler: HandlerFn;
 

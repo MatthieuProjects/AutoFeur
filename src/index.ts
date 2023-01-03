@@ -1,46 +1,16 @@
 import { EventClient } from "./events/index";
-import {
-  RESTPostAPIChannelMessageResult,
-  Routes,
-} from "discord-api-types/v10";
-import { rest } from "./rest";
 import { buildHandler } from "./handler";
 import { commands } from "./commands";
 
+/**
+ * We instanciate our nova broken client.
+ */
 const emitter = new EventClient();
+
+// We register our slash command handler.
 emitter.on("interactionCreate", buildHandler(commands));
 
-emitter.on("messageCreate", async (message) => {
-  console.log(message);
-  if (message.content.toLowerCase() == "salut") {
-    await rest.post(Routes.channelMessages(message.channel_id), {
-      body: {
-        content: `Salut <@${message.author.id}> :wink:`,
-      },
-    });
-  } else if (message.content.toLocaleLowerCase() == "~ping") {
-    let t1 = new Date().getTime();
-    let sentMessage = <RESTPostAPIChannelMessageResult>await rest.post(
-      Routes.channelMessages(message.channel_id),
-      {
-        body: {
-          content: `Calcul du ping...`,
-        },
-      }
-    );
-    let time = new Date().getTime() - t1;
-
-    await rest.patch(
-      Routes.channelMessage(message.channel_id, sentMessage.id),
-      {
-        body: {
-          content: `Le ping de <@${sentMessage.author.id}> est de \`${time}ms\``,
-        },
-      }
-    );
-  }
-});
-
+// We connect ourselves to the nova nats broker.
 emitter
   .start({
     additionalEvents: [],

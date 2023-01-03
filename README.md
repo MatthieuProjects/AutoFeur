@@ -2,13 +2,16 @@
 
 This document illustrates the process of creating a Discord Bot using the 
 Nova platform.
-The Bot interacts with Nova using a library following the popular 
-[Discord.js](https://discord.js.org) structure.
 
 > Credentials should always be private.
 
 <img src="imgs/nova1.png">
 ![An example of a Ping command, calculating the latency in a loca network.](imgs/nova1.png)
+
+# What you'll be doing
+
+The example Bot executes `ping`s (ICMP Echo) requests using Application Commands,
+also known as Slash Commands.
 
 ## Getting Started
 
@@ -49,7 +52,7 @@ Then you simply run `npm install` to install the required dependencies.
 ### Registering Commands
 
 Application Commands need to be registered to Discord ahead-of-run.
-This usely is a one-time operation.
+This usually is a one-time operation.
 This step is thus optional if you already have registered the commands.
 
 The `register.ts` utility does the job for you.

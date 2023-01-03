@@ -1,4 +1,6 @@
-config/
+config/*
+!config/default.example.yml
 dist/
-bin/
+bin/*
+!bin/.gitkeep
 node_modules/

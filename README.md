@@ -5,8 +5,7 @@ Nova platform.
 
 > Credentials should always be private.
 
-<img src="imgs/nova1.png">
-![An example of a Ping command, calculating the latency in a loca network.](imgs/nova1.png)
+![An example of a Ping command, calculating the latency in a local network.](imgs/nova1.png)
 
 # What you'll be doing
 

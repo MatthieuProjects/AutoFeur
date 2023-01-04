@@ -11,7 +11,7 @@ import {API} from '@discordjs/core';
 import {Transport, type TransportOptions} from './transport';
 
 /**
- * Maps an event name (O['t']) and a Union O and extracts alla the union members that have a matching O['t']
+ * Maps an event name (O['t']) and a Union O and extracts all the union members that have a matching O['t']
  * Example:
  *  type Variant1 = { t: 'type1', myProperty: 1 };
  *  type Variant2 = { t: 'type2', anotherProperty: 2 };
@@ -132,7 +132,7 @@ export class Client extends undefinedClient {
 				return self[symbol as string];
 			},
 		});
-		
+
 		this.transport = new Transport(self, options.transport);
 
 		// This is safe because this event is emitted by the EventEmitter itself.

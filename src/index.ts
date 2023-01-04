@@ -1,11 +1,12 @@
 import { EventClient } from "./events/index";
 import { buildHandler } from "./handler";
 import { commands } from "./commands";
+import { rest } from "./rest";
 
 /**
  * We instanciate our nova broken client.
  */
-const emitter = new EventClient();
+const emitter = new EventClient(rest);
 
 // We register our slash command handler.
 emitter.on("interactionCreate", buildHandler(commands));

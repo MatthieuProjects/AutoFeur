@@ -4,10 +4,8 @@ import globRegex from "glob-regex";
 import { REST } from "@discordjs/rest";
 import {
   APIInteractionResponse,
-  GatewayDispatchEvents,
   GatewayDispatchPayload,
   GatewayInteractionCreateDispatch,
-  InteractionResponseType,
   Routes,
 } from "discord-api-types/v10";
 import { CamelCase } from "type-fest";

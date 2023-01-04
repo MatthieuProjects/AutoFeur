@@ -53,7 +53,10 @@ export const buildHandler = (commands: Iterable<Command>) => {
     internal.set(command.json.name, command);
   }
 
-  return async (event: APIInteraction, reply?: (data: object) => void) => {
+  return async (
+    event: APIInteraction,
+    reply?: (data: APIInteractionResponse) => void
+  ) => {
     console.log("executing: ", event.data);
     if (event.type === InteractionType.ApplicationCommand) {
       console.log("executing: ", event.data);

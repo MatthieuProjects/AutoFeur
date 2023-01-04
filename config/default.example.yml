@@ -37,7 +37,6 @@ cache:
     - voice_states_cache
 
 ratelimiter:
-  
 
 # Prometheus monitoring configuration
 monitoring:

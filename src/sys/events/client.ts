@@ -109,16 +109,10 @@ export class Client extends undefinedClient {
 	}) {
 		super();
 		this.rest = new REST(options.rest).setToken('_');
-		this.transport = new Transport(this, options.transport);
 		this.api = new API(this.rest);
 
-		// This is safe because this event is emitted by the EventEmitter itself.
-		this.on('newListener' as any, async (event: EventName) => {
-			await this.transport.subscribe(event);
-		});
-
 		// Using a proxy to provide the 'on...' functionality
-		return new Proxy(this, {
+		let self = new Proxy(this, {
 			get(self, symbol: keyof typeof Client) {
 				const name = symbol.toString();
 				if (name.startsWith('on') && name.length > 2) {
@@ -130,7 +124,7 @@ export class Client extends undefinedClient {
 						self.on(eventName, fn);
 				}
 
-				if (self.api[symbol] && self[symbol as string]) {
+				if (self.api[symbol] && !self[symbol as string]) {
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 					return self.api[symbol];
 				}
@@ -138,6 +132,15 @@ export class Client extends undefinedClient {
 				return self[symbol as string];
 			},
 		});
+		
+		this.transport = new Transport(self, options.transport);
+
+		// This is safe because this event is emitted by the EventEmitter itself.
+		this.on('newListener' as any, async (event: EventName) => {
+			await this.transport.subscribe(event);
+		});
+
+		return self;
 	}
 
 	public async start() {

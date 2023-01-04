@@ -28,7 +28,16 @@ emitter.on('messageCreate', async (message) => {
 		await message.client.channels.createMessage(message.channel_id, {
 			content: `Bonjour! <@${message.author.id}>`,
 		});
+	} else if (message.content === '~pid') {
+
+		await message.client.channels.createMessage(message.channel_id, {
+			content: `Mon pid est ${process.pid}`,
+		});
 	}
+});
+
+emitter.onMessageCreate(async (message) => {
+	console.log(message.content);
 });
 
 // We connect ourselves to the nova nats broker.

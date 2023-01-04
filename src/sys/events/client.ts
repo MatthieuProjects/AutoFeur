@@ -3,10 +3,9 @@ import {type CamelCase, type PascalCase} from 'type-fest';
 import {REST, type RESTOptions} from '@discordjs/rest';
 import {
 	type APIInteractionResponse,
-	type APIInteractionResponseCallbackData,
 	type GatewayDispatchPayload,
 	type GatewayInteractionCreateDispatchData,
-} from 'discord-api-types/v10.js';
+} from 'discord-api-types/v10';
 import type TypedEmitter from 'typed-emitter';
 import {API} from '@discordjs/core';
 import {Transport, type TransportOptions} from './transport';
@@ -109,7 +108,7 @@ export class Client extends undefinedClient {
 		transport: TransportOptions;
 	}) {
 		super();
-		this.rest = new REST(options.rest);
+		this.rest = new REST(options.rest).setToken('_');
 		this.transport = new Transport(this, options.transport);
 		this.api = new API(this.rest);
 

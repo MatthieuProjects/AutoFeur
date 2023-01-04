@@ -37,7 +37,9 @@
       "import/extensions": "off",
       "unicorn/prefer-top-level-await": "off",
       "no-constructor-return": "off",
-      "unicorn/no-array-reduce": "off"
+      "unicorn/no-array-reduce": "off",
+      "import/no-unassigned-import": "off",
+      "n/file-extension-in-import": "off"
     },
     "prettier": true
   }

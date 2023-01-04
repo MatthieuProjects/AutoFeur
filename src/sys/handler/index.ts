@@ -7,7 +7,7 @@ import {
 	type RESTPostAPIChatInputApplicationCommandsJSONBody,
 	Routes,
 	type APIInteractionResponse,
-} from 'discord-api-types/v10.js';
+} from 'discord-api-types/v10';
 
 export * from './builder';
 

@@ -4,7 +4,7 @@ import {
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
 	InteractionResponseType,
-} from 'discord-api-types/v10.js';
+} from 'discord-api-types/v10';
 import {promise} from 'ping';
 import {CommandBuilder, type HandlerFn} from '../sys/handler';
 

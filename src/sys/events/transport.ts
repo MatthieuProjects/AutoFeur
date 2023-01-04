@@ -12,7 +12,7 @@ import {
 	type APIInteractionResponseCallbackData,
 	type GatewayDispatchPayload,
 	Routes,
-} from 'discord-api-types/v10.js';
+} from 'discord-api-types/v10';
 import {type CamelCase} from 'type-fest';
 import {type Client, type EventName, type EventsHandlerArguments} from '.';
 

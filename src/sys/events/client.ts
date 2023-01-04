@@ -1,17 +1,15 @@
+import {EventEmitter} from 'node:stream';
+import {type CamelCase, type PascalCase} from 'type-fest';
+import {REST, type RESTOptions} from '@discordjs/rest';
 import {
-  APIApplicationCommandPermissionsConstant,
-  APIInteractionResponse,
-  APIInteractionResponseCallbackData,
-  GatewayDispatchPayload,
-  GatewayInteractionCreateDispatchData,
-} from "discord-api-types/v10";
-import { Transport, TransportOptions } from "./transport";
-import { CamelCase, PascalCase } from "type-fest";
-import { REST, RESTOptions } from "@discordjs/rest";
-import { EventEmitter } from "stream";
-import TypedEmitter from "typed-emitter";
-
-import { API } from "@discordjs/core";
+	type APIInteractionResponse,
+	type APIInteractionResponseCallbackData,
+	type GatewayDispatchPayload,
+	type GatewayInteractionCreateDispatchData,
+} from 'discord-api-types/v10.js';
+import type TypedEmitter from 'typed-emitter';
+import {API} from '@discordjs/core';
+import {Transport, type TransportOptions} from './transport';
 
 /**
  * Maps an event name (O['t']) and a Union O and extracts alla the union members that have a matching O['t']
@@ -24,27 +22,31 @@ import { API } from "@discordjs/core";
  *  let variant2: ExtractVariant<ExampleUnion, 'type2'>; // Type of variant2 is Variant2
  *
  */
-type ExtractVariant<O extends { t: string }, U extends O["t"]> = Extract<
-  O & { t: Exclude<O["t"], Exclude<O["t"], U>> },
-  { t: U }
+type ExtractVariant<O extends {t: string}, U extends O['t']> = Extract<
+	O & {t: Exclude<O['t'], Exclude<O['t'], U>>},
+	{t: U}
 >;
 
 /**
  * Add intrisics properties to the event, such as `client` and `rest`
  */
-export type WithIntrisics<T> = T & { client: Client };
+export type WithIntrisics<T> = T & {client: Client};
+
+/**
+ * CamelCased event name
+ */
 export type EventName = keyof EventsHandlerArguments;
 /**
  * Reprends a handler function with one argument
  */
 export type HandlerFunction<Arg extends unknown[]> = (
-  ...args: Arg
-) => unknown | Promise<unknown>;
+	...args: Arg
+) => PromiseLike<void>;
 
 export type EventTypes = {
-  [P in GatewayDispatchPayload["t"]]: WithIntrisics<
-    ExtractVariant<GatewayDispatchPayload, P>["d"]
-  >;
+	[P in GatewayDispatchPayload['t']]: WithIntrisics<
+		ExtractVariant<GatewayDispatchPayload, P>['d']
+	>;
 };
 
 /**
@@ -52,16 +54,16 @@ export type EventTypes = {
  * Also reteives the type of the event using ExtractEvent
  */
 export type EventsHandlerArguments = {
-  [P in keyof EventTypes as `${CamelCase<P>}`]: HandlerFunction<
-    [EventTypes[P]]
-  >;
+	[P in keyof EventTypes as `${CamelCase<P>}`]: HandlerFunction<
+		[EventTypes[P]]
+	>;
 } & {
-  interactionCreate: HandlerFunction<
-    [
-      WithIntrisics<GatewayInteractionCreateDispatchData>,
-      (interactionCreate: APIInteractionResponseCallbackData) => void
-    ]
-  >;
+	interactionCreate: HandlerFunction<
+		[
+			WithIntrisics<GatewayInteractionCreateDispatchData>,
+			(interactionCreate: APIInteractionResponse) => void,
+		]
+	>;
 };
 
 /**
@@ -69,74 +71,77 @@ export type EventsHandlerArguments = {
  * This is implemented by a Proxy
  */
 export type EventsFunctions = {
-  [P in keyof EventsHandlerArguments as P extends string
-    ? `on${PascalCase<P>}`
-    : never]: (fn: EventsHandlerArguments[P]) => Client;
+	[P in keyof EventsHandlerArguments as P extends string
+		? `on${PascalCase<P>}`
+		: never]: (fn: EventsHandlerArguments[P]) => Client;
 };
 
 /**
  * Defines all the methods known to be implemented
  */
-interface ClientFunctions
-  extends EventsFunctions,
-    TypedEmitter<EventsHandlerArguments>,
-    API {}
+type ClientFunctions = Record<string, unknown> &
+	EventsFunctions &
+	TypedEmitter<EventsHandlerArguments> &
+	API;
 
 /**
  * The real extended class is an EventEmitter.
  */
-const UndefinedClient: { new (): ClientFunctions } = EventEmitter as any;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+const undefinedClient: new () => ClientFunctions = EventEmitter as any;
 
 /**
- * nova.js client
+ * Nova.js client
  *
  * Used to interact with nova, emits events from nova
  * Example:
  *  client.on('messageCreate', (message) => { console.log('Message received', message.content) });
  *  client.on('interactionCreate', (message) => {  });
  */
-export class Client extends UndefinedClient {
-  private readonly transport: Transport;
-  private readonly api: API;
-  public readonly rest: REST;
+export class Client extends undefinedClient {
+	public readonly rest: REST;
 
-  constructor(options: {
-    rest?: Partial<RESTOptions>;
-    transport: TransportOptions;
-  }) {
-    super();
-    this.rest = new REST(options.rest);
-    this.transport = new Transport(this, options.transport);
-    this.api = new API(this.rest);
+	private readonly transport: Transport;
+	private readonly api: API;
 
-    // This is safe because this event is emitted by the EventEmitter itself.
-    this.on("newListener" as any, (event: EventName) => {
-      this.transport.subscribe(event);
-    });
+	constructor(options: {
+		rest?: Partial<RESTOptions>;
+		transport: TransportOptions;
+	}) {
+		super();
+		this.rest = new REST(options.rest);
+		this.transport = new Transport(this, options.transport);
+		this.api = new API(this.rest);
 
-    // Using a proxy to provide the 'on...' functionality
-    return new Proxy(this, {
-      get(self, symbol) {
-        let name = symbol.toString();
-        if (name.startsWith("on") && name.length > 2) {
-          // Get the event name
-          let eventName = [name[2].toLowerCase(), name.slice(3)].join(
-            ""
-          ) as EventName;
-          return (fn: EventsHandlerArguments[typeof eventName]) =>
-            self.on(eventName, fn);
-        }
+		// This is safe because this event is emitted by the EventEmitter itself.
+		this.on('newListener' as any, async (event: EventName) => {
+			await this.transport.subscribe(event);
+		});
 
-        if (self.api[symbol] && self[symbol]) {
-          return self.api[symbol];
-        }
+		// Using a proxy to provide the 'on...' functionality
+		return new Proxy(this, {
+			get(self, symbol: keyof typeof Client) {
+				const name = symbol.toString();
+				if (name.startsWith('on') && name.length > 2) {
+					// Get the event name
+					const eventName = [name[2].toLowerCase(), name.slice(3)].join(
+						'',
+					) as EventName;
+					return (fn: EventsHandlerArguments[typeof eventName]) =>
+						self.on(eventName, fn);
+				}
 
-        return self[symbol];
-      },
-    });
-  }
+				if (self.api[symbol] && self[symbol as string]) {
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+					return self.api[symbol];
+				}
 
-  public start() {
-    return this.transport.start();
-  }
+				return self[symbol as string];
+			},
+		});
+	}
+
+	public async start() {
+		return this.transport.start();
+	}
 }

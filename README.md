@@ -1,29 +1,39 @@
 # Nova quickstart
 
-This is a simple example of a nov base Discord bot inspired by the discord.js structure.
+This document illustrates the process of creating a Discord Bot using the 
+Nova platform.
 
-## What you'll be doing
+> Credentials should always be private.
 
-This repo is a simple example of a bot developped using Nova. It's a simple bot that executes `ping` (ICMP Echo) requests using slash-commands.
+![An example of a Ping command, calculating the latency in a local network.](imgs/nova1.png)
 
-> Issuing arbitrary pings is not viable for a real discord bot, this is an example. Acces to your developement bot should be kept private to avoid abuse.
+# What you'll be doing
 
-<img src="imgs/nova1.png">
+The example Bot executes `ping`s (ICMP Echo) requests using Application Commands,
+also known as Slash Commands.
 
-## Running
+## Getting Started
 
-### Configuring your instance
+### Configuring the Bot
 
-> The nova-all-in-one we are going to use is going to search this directory for a `default.{toml,json,json5,yml,yaml}`, feel free to use the configuration language you feel confortable with.
+Configuration is done by creating a file inside the [config](config/) directory.
+The file should be named "default", we support TOML, JSON (and JSON5) and YAML.
 
-You need to fill the configuration file and rename it to `default.yml` in the `config/` folder.
+Make sure to configure properly your instance before getting started, see the
+example file in the directory for more information.
 
-### Getting nova running
+### Starting the Bot
 
-Download the nova-all-in-one server and put it in `bin/nova`.
-You can find the binary in the nova project releases page.
+You need to install Nova.
+For simplicity we will use the [`all-on-one`](https://github.com/discordnova/Nova/tree/main/exes/all)
+distribution, which provides a single binary. 
+This is usesul in development environments.
+Place the binary inside the [`bin`](bin/) directory, under the name `nova`.
 
-> You can also use a full Nova instance running in `docker-compose` or an orchestrator such as [Kubernetes](https://kubernetes.io). Using a real nova instance, you'll need to store the configuration file safely depending on your orchestrator.
+> To get the most out of Nova, we strongly encourages you to deploy Nova 
+correctly (as microservices), on the orchestrator you want (Kubernetes, 
+Docker Compose...).
+> The all-in-one distribution IS NOT MADE for production environments.
 
 The next step is starting nova:
 
@@ -31,43 +41,30 @@ The next step is starting nova:
 RUST_LOG=info ./bin/nova
 ```
 
-### Installing npm dependencies
+### Installing Node Dependencies
 
-Since this example use node, you need node.js installed and a package manager, we recommend *yarn* or *pnpm*. 
+This example uses Node.js and TypeScript.
 
-```bash
-# Using yarn
-yarn
-# Using pnpm
-pnpm install
-# Using npm
-npm install
-```
+You need to [Install Node.js](https://nodejs.org).
+Then you simply run `npm install` to install the required dependencies.
 
-### Registering commands
+### Registering Commands
 
-Before starting your bot, you need to run the `register.ts` utility to register the commands wihin discord.
+Application Commands need to be registered to Discord ahead-of-run.
+This usually is a one-time operation.
+This step is thus optional if you already have registered the commands.
 
-> Registering commands is a one-time operation to tell discord which commands are available, you can read more about it [here](https://discord.com/developers/docs/interactions/application-commands#registering-a-command)
+The `register.ts` utility does the job for you.
 
 ```bash
-# Using yarn
-yarn register
-# Using pnpm
-pnpm run register
-# Using npm
 npm run register
 ```
 
 ### Starting the bot
 
-Finally, you can start the bot instance.
+To start the Bot and make it connect to the Nova Gateway, run the following:
 
 ```bash
-# Using yarn
-yarn start
-# Using pnpm
-pnpm run start
 # Using npm
 npm run start
 ```

@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "https://github.com/discordnova/nova-quickstart",
   "author": "MatthieuCoder",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "@discordjs/builders": "^1.4.0",
     "@discordjs/rest": "^1.5.0",

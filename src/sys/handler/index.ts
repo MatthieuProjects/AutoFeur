@@ -35,7 +35,7 @@ export const registerCommands = async (
 	rest: REST,
 	appId: string,
 ) => {
-	await rest.post(Routes.applicationCommands(appId), {
+	await rest.put(Routes.applicationCommands(appId), {
 		body: [...commands].map(
 			(x) => x.json,
 		) as RESTPostAPIApplicationCommandsJSONBody[],

@@ -23,7 +23,7 @@ const emitter = new Client({
 emitter.on('interactionCreate', buildHandler(commands));
 
 // Simple message handler
-emitter.on('messageCreate', async (message) => {
+emitter.onMessageCreate(async (message) => {
 	if (message.content === '~ping') {
 		await message.client.channels.createMessage(message.channel_id, {
 			content: `Bonjour! <@${message.author.id}>`,
@@ -34,10 +34,6 @@ emitter.on('messageCreate', async (message) => {
 			content: `Mon pid est ${process.pid}`,
 		});
 	}
-});
-
-emitter.onMessageCreate(async (message) => {
-	console.log(message.content);
 });
 
 // We connect ourselves to the nova nats broker.

@@ -1,6 +1,16 @@
 import { connect, ConnectionOptions, NatsConnection } from "nats";
 import { EventClient, Events } from ".";
 import globRegex from "glob-regex";
+import { REST } from "@discordjs/rest";
+import {
+  APIInteractionResponse,
+  GatewayDispatchEvents,
+  GatewayDispatchPayload,
+  GatewayInteractionCreateDispatch,
+  InteractionResponseType,
+  Routes,
+} from "discord-api-types/v10";
+import { CamelCase } from "type-fest";
 
 export type TransportOptions = {
   additionalEvents?: (keyof Events)[];
@@ -13,7 +23,7 @@ export class Transport {
   private queue?: string;
   private events: Set<string> = new Set();
 
-  constructor(private emitter: EventClient) {}
+  constructor(private emitter: EventClient, private rest: REST) {}
 
   public async start(options: TransportOptions) {
     this.nats = await connect(options?.nats);
@@ -84,20 +94,28 @@ export class Transport {
     const fn = async () => {
       for await (let data of sub) {
         let string = Buffer.from(data.data).toString("utf-8");
-        let d = JSON.parse(string);
-        let respond: Function | null = null;
-
-        if (data.reply) {
-          console.log("expecting reply.");
-          respond = (d: object) => {
-            data.respond(Buffer.from(JSON.stringify(d), "utf-8"));
-          };
-        }
+        let d: GatewayDispatchPayload = JSON.parse(string);
+        let respond: (repond: APIInteractionResponse) => void | null = null;
         const camelCased = d.t.toLowerCase().replace(/_([a-z])/g, function (g) {
           return g[1].toUpperCase();
-        });
-        console.log("envoi de ", camelCased);
-        this.emitter.emit(camelCased, d.d, respond);
+        }) as CamelCase<`${typeof d.t}`>;
+
+        if (camelCased === "integrationCreate") {
+          let interaction = d.d as GatewayInteractionCreateDispatch["d"];
+          respond = (respond: APIInteractionResponse) => {
+            if (data.reply) {
+              data.respond(Buffer.from(JSON.stringify(respond), "utf-8"));
+            } else {
+              this.rest.post(
+                Routes.webhook(interaction.channel_id, interaction.token),
+                { body: respond }
+              );
+            }
+          };
+          console.log("expecting reply.");
+        }
+
+        this.emitter.emit(camelCased, respond, d.d as any);
       }
     };
     this.subscription.set(event, resolve);

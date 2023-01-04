@@ -1,9 +1,10 @@
 import { EventEmitter } from "events";
 import { PascalCase } from "type-fest";
 import { Events } from ".";
+import { APIInteractionResponse } from "discord-api-types/v10";
 
 export type HandlerFunction<Args extends unknown[]> = (
-  ...args: [...Args, ...[resolve?: (data: object) => void]]
+  ...args: [...Args, ...[resolve?: (data: APIInteractionResponse) => void]]
 ) => unknown | Promise<unknown>;
 
 export type EventsFunctions = {
@@ -38,7 +39,11 @@ export interface BaseEventEmitter extends EventEmitter {
   removeAllListeners(eventName: keyof Events | undefined): this;
   removeListener(eventName: keyof Events): this;
 
-  emit<T extends keyof Events>(name: T, ...args: Events[T]): boolean;
+  emit<T extends keyof Events>(
+    name: T,
+    respond: (data: APIInteractionResponse) => void,
+    ...args: Events[T]
+  ): boolean;
   listenerCount(event: keyof Events): number;
   listeners<T extends keyof Events>(event: T): HandlerFunction<Events[T]>[];
   rawListeners: this["listeners"];

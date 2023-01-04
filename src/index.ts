@@ -1,23 +1,34 @@
-import { EventClient } from "./events/index";
-import { buildHandler } from "./handler";
+import { Client } from "./sys/events";
+import { buildHandler } from "./sys/handler";
 import { commands } from "./commands";
-import { rest } from "./rest";
 
 /**
- * We instanciate our nova broken client.
+ * We instanciate our nova broker client.
  */
-const emitter = new EventClient(rest);
-
-// We register our slash command handler.
-emitter.on("interactionCreate", buildHandler(commands));
-
-// We connect ourselves to the nova nats broker.
-emitter
-  .start({
+const emitter = new Client({
+  transport: {
     additionalEvents: [],
     nats: {
       servers: ["localhost:4222"],
     },
     queue: "nova-worker-common",
-  })
-  .catch(console.log);
+  },
+  rest: {
+    api: "http://localhost:8090/api",
+  },
+});
+
+// We register our slash command handler.
+emitter.on("interactionCreate", buildHandler(commands));
+
+// Simple message handler
+emitter.on("messageCreate", (message) => {
+  if (message.content === "~ping") {
+    message.client.channels.createMessage(message.channel_id, {
+      content: `Bonjour! <@${message.author.id}>`,
+    });
+  }
+});
+
+// We connect ourselves to the nova nats broker.
+emitter.start().catch(console.log);

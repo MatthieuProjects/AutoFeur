@@ -3,6 +3,7 @@ import {
   APIApplicationCommandInteraction,
   APIInteraction,
   APIInteractionResponse,
+  APIInteractionResponseCallbackData,
   InteractionType,
   RESTPostAPIApplicationCommandsJSONBody,
   RESTPostAPIChatInputApplicationCommandsJSONBody,
@@ -17,7 +18,7 @@ export type PromiseLike<T> = T | Promise<T>;
  */
 export type HandlerFn = (
   data: APIApplicationCommandInteraction
-) => PromiseLike<APIInteractionResponse>;
+) => PromiseLike<APIInteractionResponseCallbackData>;
 
 export type Command = {
   json: RESTPostAPIChatInputApplicationCommandsJSONBody;
@@ -35,11 +36,11 @@ export const registerCommands = async (
   rest: REST,
   applicationId: string
 ) => {
-  for (const command of commands) {
-    await rest.post(Routes.applicationCommands(applicationId), {
-      body: command.json as RESTPostAPIApplicationCommandsJSONBody,
-    });
-  }
+  await rest.post(Routes.applicationCommands(applicationId), {
+    body: [...commands].map(
+      (x) => x.json
+    ) as RESTPostAPIApplicationCommandsJSONBody[],
+  });
 };
 
 /**
@@ -55,7 +56,7 @@ export const buildHandler = (commands: Iterable<Command>) => {
 
   return async (
     event: APIInteraction,
-    reply?: (data: APIInteractionResponse) => void
+    reply?: (data: APIInteractionResponseCallbackData) => void
   ) => {
     console.log("executing: ", event.data);
     if (event.type === InteractionType.ApplicationCommand) {

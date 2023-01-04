@@ -5,7 +5,7 @@ import {
   ApplicationCommandType,
   InteractionResponseType,
 } from "discord-api-types/v10";
-import { CommandBuilder, HandlerFn } from "../handler";
+import { CommandBuilder, HandlerFn } from "../sys/handler";
 import { promise } from "ping";
 
 type Messages = {

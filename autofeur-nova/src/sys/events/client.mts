@@ -1,4 +1,4 @@
-import {EventEmitter} from 'node:stream';
+import {EventEmitter} from 'node:events';
 import {type CamelCase, type PascalCase} from 'type-fest';
 import {REST, type RESTOptions} from '@discordjs/rest';
 import {
@@ -6,9 +6,9 @@ import {
 	type GatewayDispatchPayload,
 	type GatewayInteractionCreateDispatchData,
 } from 'discord-api-types/v10';
-import type TypedEmitter from 'typed-emitter';
+import TypedEventEmitter from 'typed-emitter';
 import {API} from '@discordjs/core';
-import {Transport, type TransportOptions} from './transport';
+import {Transport, type TransportOptions} from './transport.mjs';
 
 /**
  * Maps an event name (O['t']) and a Union O and extracts all the union members that have a matching O['t']
@@ -80,7 +80,7 @@ export type EventsFunctions = {
  */
 type ClientFunctions = Record<string, unknown> &
 	EventsFunctions &
-	TypedEmitter<EventsHandlerArguments> &
+	TypedEventEmitter<EventsHandlerArguments> &
 	API;
 
 /**

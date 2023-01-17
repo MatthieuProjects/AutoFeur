@@ -2,9 +2,11 @@
     "compilerOptions": {
         "outDir": "dist",
         "downlevelIteration": true,
-        "target": "ES5",
+        "module": "es2022",
+        "target": "ES6",
         "sourceMap": true,
-        "moduleResolution": "node",
+        "lib": ["ES2022"],
+        "moduleResolution": "NodeNext",
         "skipLibCheck": true,
         "incremental": true
     },

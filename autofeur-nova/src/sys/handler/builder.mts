@@ -1,5 +1,5 @@
 import {SlashCommandBuilder} from '@discordjs/builders';
-import {type Command, type HandlerFn} from '.';
+import {type Command, type HandlerFn} from './index.mjs';
 
 /**
  * Simple wrapper around the SlashCommandBuilder provided by Discord.js

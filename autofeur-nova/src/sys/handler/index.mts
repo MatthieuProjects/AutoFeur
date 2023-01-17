@@ -9,7 +9,7 @@ import {
 	type APIInteractionResponse,
 } from 'discord-api-types/v10';
 
-export * from './builder';
+export * from './builder.mjs';
 
 export type PromiseLike<T> = T | Promise<T>;
 /**

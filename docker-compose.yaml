@@ -1,0 +1,75 @@
+version: "3.3"
+services:
+  autofeur_nova:
+    build: autofeur-nova
+    restart: always
+    depends_on:
+      - deep_phonemizer
+  deep_phonemizer:
+    build: deep_phonemizer
+    restart: always
+
+  nats:
+    image: nats
+    restart: always
+  
+  redis:
+    image: redis
+    restart: always
+
+  cache:
+    image: ghcr.io/discordnova/nova/cache
+    restart: always
+    volumes:
+      - ./config/default.yml:/config/default.yml
+    environment:
+      - RUST_LOG=trace
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
+    depends_on:
+      - nats
+      - redis
+  
+  gateway:
+    image: ghcr.io/discordnova/nova/gateway
+    restart: always
+    volumes:
+      - ./config/default.yml:/config/default.yml
+    environment:
+      - RUST_LOG=trace
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
+    depends_on:
+      - nats
+
+  rest:
+    image: ghcr.io/discordnova/nova/rest
+    restart: always
+    volumes:
+      - ./config/default.yml:/config/default.yml
+    environment:
+      - RUST_LOG=trace
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
+    depends_on:
+      - ratelimiter
+
+  webhook:
+    image: ghcr.io/discordnova/nova/webhook
+    restart: always
+    volumes:
+      - ./config/default.yml:/config/default.yml
+    environment:
+      - RUST_LOG=trace
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
+    depends_on:
+      - nats
+
+  ratelimiter:
+    image: ghcr.io/discordnova/nova/ratelimit
+    restart: always
+    volumes:
+      - ./config/default.yml:/config/default.yml
+    environment:
+      - RUST_LOG=trace
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
+    depends_on:
+      - nats
+      - redis

@@ -1,10 +1,15 @@
 version: "3.3"
 services:
   autofeur_nova:
-    build: autofeur-nova
+    build: autofeur_nova
     restart: always
     depends_on:
       - deep_phonemizer
+      - nats
+    environment:
+      - NATS=nats
+      - REST=http://rest:8090/api
+      - PHONEMIZER=http://deep_phonemizer:8000/
   deep_phonemizer:
     build: deep_phonemizer
     restart: always
@@ -21,10 +26,7 @@ services:
     image: ghcr.io/discordnova/nova/cache
     restart: always
     volumes:
-      - ./config/default.yml:/config/default.yml
-    environment:
-      - RUST_LOG=trace
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
+      - ./autofeur_nova/config/default.yml:/config/default.yml
     depends_on:
       - nats
       - redis
@@ -33,10 +35,7 @@ services:
     image: ghcr.io/discordnova/nova/gateway
     restart: always
     volumes:
-      - ./config/default.yml:/config/default.yml
-    environment:
-      - RUST_LOG=trace
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
+      - ./autofeur_nova/config/default.yml:/config/default.yml
     depends_on:
       - nats
 
@@ -44,10 +43,7 @@ services:
     image: ghcr.io/discordnova/nova/rest
     restart: always
     volumes:
-      - ./config/default.yml:/config/default.yml
-    environment:
-      - RUST_LOG=trace
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
+      - ./autofeur_nova/config/default.yml:/config/default.yml
     depends_on:
       - ratelimiter
 
@@ -55,10 +51,7 @@ services:
     image: ghcr.io/discordnova/nova/webhook
     restart: always
     volumes:
-      - ./config/default.yml:/config/default.yml
-    environment:
-      - RUST_LOG=trace
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
+      - ./autofeur_nova/config/default.yml:/config/default.yml
     depends_on:
       - nats
 
@@ -66,10 +59,7 @@ services:
     image: ghcr.io/discordnova/nova/ratelimit
     restart: always
     volumes:
-      - ./config/default.yml:/config/default.yml
-    environment:
-      - RUST_LOG=trace
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
+      - ./autofeur_nova/config/default.yml:/config/default.yml
     depends_on:
       - nats
       - redis

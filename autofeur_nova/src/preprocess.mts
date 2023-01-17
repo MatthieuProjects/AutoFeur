@@ -1,10 +1,6 @@
-import { writeFile, writeFileSync } from "fs";
+import { writeFileSync } from "fs";
 import { request } from "undici";
-
-const phonemize = (grapheme: string) =>
-  request(
-    `http://localhost:5000?grapheme=${encodeURIComponent(grapheme)}`
-  ).then((x) => x.body.text());
+import { phonemize } from "./phonemizelib.mjs";
 
 let jsonData: {
   word: string;
@@ -13,10 +9,10 @@ let jsonData: {
 }[] = [];
 
 let words: string[] = [
-  "ta mere",
+  "ta mère",
   "tapis",
   "taper",
-  "tare",
+  "taré",
   "tabasser",
   "tabouret",
   "rigole",
@@ -31,9 +27,7 @@ let words: string[] = [
   "lapin",
   "ouistiti",
   "wifi",
-  "uifi",
-  "ouisky",
-  "uisky",
+  "wisky",
   "renard",
   "requin",
   "repas",
@@ -44,8 +38,7 @@ let words: string[] = [
   "kiri",
   "western",
   "un deux",
-  "hein deux",
-  "deu trois",
+  "deux trois",
   "yoplait",
   "avalanche",
   "moisissure",
@@ -67,7 +60,11 @@ let words: string[] = [
   "surfeur",
   "toilettes",
   "lebron james",
-  "c'est de la merde"
+  "c'est de la merde",
+  "trois quatre",
+  "quatre cinq",
+  "cinq six",
+  "six sept",
 ];
 
 (async () => {
@@ -78,7 +75,7 @@ let words: string[] = [
     for (let i = 3; i <= word.length; i++) {
       // add n last characters from the phoneme
       let add = word.slice(word.length - i, word.length);
-      partials[add] = await phonemize(add);
+      partials[await phonemize(add)] = add;
     }
 
     jsonData.push({ phoneme, word, partials });

@@ -10,7 +10,7 @@ RUN npm i
 
 COPY . .
 
-RUN npm run build || true
+RUN npm run build
 
 FROM node:slim
 
@@ -19,8 +19,9 @@ WORKDIR /usr/src/app
 
 # Install app dependencies
 COPY package*.json ./
+COPY data.json .
 
-RUN npm i --production
+RUN npm i --omit=dev --production
 
 COPY --from=builder /usr/src/app/dist ./dist
 

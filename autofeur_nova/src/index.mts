@@ -1,30 +1,32 @@
 import "source-map-support";
-import { Client } from "./sys/events/client.mjs";
 import {
   GatewayMessageCreateDispatch,
   RESTPostAPIChannelMessageJSONBody,
   Routes,
 } from "discord-api-types/v10";
 import { match } from "./algo.mjs";
+import { Client } from "@discordnova/nova-js/src/lib/client.js";
+
+export const NATS = process.env.NATS || "localhost:4222";
+export const REST = process.env.REST || "http://localhost:8090/api";
 
 (async () => {
   const emitter = new Client({
     transport: {
       additionalEvents: [],
       nats: {
-        servers: ["localhost:4222"],
+        servers: [NATS],
       },
       queue: "nova-worker-common",
     },
     rest: {
-      api: "http://localhost:8090/api",
+      api: REST,
     },
   });
 
   emitter.on(
     "messageCreate",
     async (message: GatewayMessageCreateDispatch["d"]) => {
-      if (message.author.id === "807188335717384212") return;
       let response = await match(message.content);
       if (response) {
         await emitter.rest.post(Routes.channelMessages(message.channel_id), {

@@ -1,6 +1,6 @@
 # Autofeur
 
-Bot that reponds with end of words
+Bot that responds with end of words
 
 ## Structure
 

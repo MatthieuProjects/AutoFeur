@@ -72,17 +72,17 @@
     tslib "^2.4.1"
     ws "^8.11.0"
 
-"@discordnova/nova-cli@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@discordnova/nova-cli/-/nova-cli-0.0.4.tgz#66583e349f14c8fafc6f4e9fd184d7bb481304c8"
-  integrity sha512-n+1+Nzc8tTgfT6f6+0E5ELfrj6b5vP73H5FQlnb7gbMFDkCJeHuDlZqxJuy9uax6bIQuMF+uJyan2lTdRF6Z7g==
+"@discordnova/nova-cli@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@discordnova/nova-cli/-/nova-cli-0.0.5.tgz#9ad013bb25e3aa91795654cfa0ba8bbfb7f3b2fe"
+  integrity sha512-ielyAYo6cTxLT8CyEgDTGxOv9A3gRl3IQCvoETjyDdJrZGd4CJFwBTOB5Dl1tq8wYohsaxEywLb3UnKyTHsYaA==
   dependencies:
     undici "^5.15.0"
 
-"@discordnova/nova-js@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@discordnova/nova-js/-/nova-js-0.0.4.tgz#10f530d06f0ccd920491cb4881e2cc4d82e29ea1"
-  integrity sha512-6t23zVkHBzw4jFYkYYkhUbIFBGsQo1CL4xnvuq3oruCpEhVVt0jkkc7RhQB6EspfIiLFuhyfMjRdlKJ1YEpsQg==
+"@discordnova/nova-js@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@discordnova/nova-js/-/nova-js-0.0.5.tgz#753e126696e789fdd1fda43b08a6a493fff4fc27"
+  integrity sha512-ok1G2czehvptn6ICZYUP5CSqPuRzvI8b+rNFsdEQOEn1G2hLRFvYTn21QzirFcEO5y1yOa9zOr7VnQ3o0HH2Cw==
   dependencies:
     "@discordjs/core" "^0.3.0"
     "@discordjs/rest" "^1.5.0"
@@ -2734,10 +2734,15 @@ typed-array-length@^1.0.4:
     for-each "^0.3.3"
     is-typed-array "^1.1.9"
 
-typescript@^4.9.3, typescript@^4.9.4:
+typescript@^4.9.3:
   version "4.9.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.4.tgz#a2a3d2756c079abda241d75f149df9d561091e78"
   integrity sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==
+
+typescript@^5.0.0-dev.20230120:
+  version "5.0.0-dev.20230120"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.0.0-dev.20230120.tgz#8b8872448cfb88296c7dc530dc4a60e138230c75"
+  integrity sha512-vgmInMYmRogavAvGVDd+gnrckZJPFbfBp2l7ubTRtZ4CDw9YeUu3121tclQy+0FlmzvhfPUvbJ/ZWEqjQTKGbw==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"

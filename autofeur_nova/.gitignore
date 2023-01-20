@@ -1,4 +1,5 @@
 bin/
 node_modules/
 dist/
-config/
+config/*
+!config/default.example.yml

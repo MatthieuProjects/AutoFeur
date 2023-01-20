@@ -1,0 +1,59 @@
+gateway:
+  token: # You need to fill this!
+  intents: 3276799
+  shard: 0
+  shard_total: 1
+
+rest:
+  discord:
+    token: # You need to fill this!
+  server:
+    listening_adress: 0.0.0.0:8090
+  ratelimiter_address: localhost # You need to change this to your ratelimit server address!
+  ratelimiter_port: 8092
+
+webhook:
+  discord:
+    public_key: # You need to fill this
+  server:
+    listening_adress: 0.0.0.0:8091
+
+cache:
+  toggles:
+    - channels_cache
+    - guilds_cache
+    - guild_schedules_cache
+    - stage_instances_cache
+    - integrations_cache
+    - members_cache
+    - bans_cache
+    - reactions_cache
+    - messages_cache
+    - threads_cache
+    - invites_cache
+    - roles_cache
+    - automoderation_cache
+    - voice_states_cache
+
+ratelimiter:
+  server:
+    listening_adress: 0.0.0.0:8092
+
+# Prometheus monitoring configuration
+monitoring:
+  enabled: false
+  address: 0.0.0.0
+  port: 9000
+
+# Nats broker configuration
+nats:
+  host: nats
+
+redis:
+  url: redis://redis
+
+#opentelemetry:
+ # metrics:
+ #   endpoint: http://otelcol:4317
+ # traces:
+ #   endpoint: http://otelcol:4317

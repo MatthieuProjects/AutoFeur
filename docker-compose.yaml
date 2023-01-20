@@ -4,16 +4,27 @@ services:
     build: autofeur_nova
     restart: always
     depends_on:
-      - deep_phonemizer
+      - autofeur_db
       - nats
     environment:
       - NATS=nats
       - REST=http://rest:8090/api
+      - DB=http://autofeur_db:3000/
+  
+  autofeur_db:
+    build: autofeur_db
+    restart: always
+    depends_on:
+      - deep_phonemizer
+    environment:
       - PHONEMIZER=http://deep_phonemizer:8000/
+    volumes:
+      - ./autofeur_db/assets/db.bin:/app/assets/db.bin
   deep_phonemizer:
     build: deep_phonemizer
     restart: always
-
+    volumes:
+      - ./deep_phonemizer/assets/model.pt:/app/assets/model.pt
   nats:
     image: nats
     restart: always
@@ -31,9 +42,11 @@ services:
       - nats
       - redis
   
-  gateway:
+  gateway0:
     image: ghcr.io/discordnova/nova/gateway
     restart: always
+    environment:
+      - NOVA__GATEWAY__SHARD=0
     volumes:
       - ./autofeur_nova/config/default.yml:/config/default.yml
     depends_on:

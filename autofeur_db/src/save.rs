@@ -5,7 +5,8 @@ use serde::{Deserialize, Serialize};
 use crate::trie::Trie;
 
 #[derive(Debug, Deserialize, Serialize, Default)]
-pub struct Save {
-    pub trie: Trie,
-    pub reverse_index: HashMap<String, String>
+pub struct Save<'a> {
+    #[serde(borrow = "'a")]
+    pub trie: Trie<'a>,
+    pub reverse_index: HashMap<String, String>,
 }

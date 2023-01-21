@@ -10,19 +10,23 @@ import { request } from "undici";
 // `autofeur_db` service
 export const DB = process.env.DB || "http://localhost:3000";
 // nats broker for connecting to nova
-export const NATS = process.env.NATS || "localhost:4222";
+export const NATS = process.env.NATS || "192.168.0.17:4222";
 // rest endpoint for connecting to nova
-export const REST = process.env.REST || "http://localhost:8090/api";
+export const REST = process.env.REST || "http://192.168.0.17:8090/api";
 
 /**
  * Completes a grapheme using the `autofeur_db` service.
  * @param grapheme Grapheme to complete
  * @returns Completed grapheme
  */
-export const completeWord = (grapheme: string) =>
-  request(`${DB}?grapheme=${encodeURIComponent(grapheme)}`).then((x) =>
-    x.body.text()
-  );
+export const completeWord = (grapheme: string) => {
+  let resp = request(`${DB}?grapheme=${encodeURIComponent(grapheme)}`);
+  return resp.then((x) => {
+    if (x.statusCode === 200) {
+      return x.body.text();
+    }
+  });
+};
 
 /**
  * Cleans a sentence for usage with this program, strips unwanted chars

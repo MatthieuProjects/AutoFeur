@@ -1,6 +1,5 @@
 use std::fs;
 
-use autofeur::french_ipa::parse_word;
 use autofeur::save::Save;
 use kdam::tqdm;
 
@@ -42,17 +41,9 @@ async fn main() {
         phonems.append(&mut pron);
     }
 
-    let mut invalid = 0;
     for phoneme in tqdm!(phonems.iter()) {
-        match parse_word(&phoneme) {
-            Some(a) => save.trie.insert(a),
-            None => {
-                invalid += 1;
-            }
-        }
+        save.trie.insert(&phoneme);
     }
-
-    println!("Invalid items count: {}", invalid);
 
     fs::write("assets/db.bin", bincode::serialize(&save).unwrap()).unwrap();
 

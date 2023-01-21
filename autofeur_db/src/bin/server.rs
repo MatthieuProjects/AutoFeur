@@ -17,28 +17,47 @@ fn parse_query(query: &str) -> HashMap<String, String> {
         .collect()
 }
 
-async fn handler(request: Request<Body>) -> Result<Response<Body>, anyhow::Error> {
+fn anyhow_response(err: anyhow::Error) -> Response<Body> {
+    Response::builder()
+        .status(400)
+        .body(Body::from(err.root_cause().to_string()))
+        .unwrap()
+}
+
+async fn handler(request: Request<Body>) -> Result<Response<Body>, hyper::Error> {
     let save: &Arc<Save> = request.extensions().get().unwrap();
-    let query = request
+    let query = match request
         .uri()
         .query()
-        .ok_or_else(|| anyhow!("query does not exists"))?;
-    let data = parse_query(query)
+        .ok_or_else(|| anyhow_response(anyhow!("query does not exists")))
+    {
+        Ok(ok) => ok,
+        Err(err) => return Ok(err),
+    };
+    let data = match parse_query(query)
         .get("grapheme")
-        .ok_or_else(|| anyhow!("grapheme argument is not specified"))?
-        .clone();
+        .ok_or_else(|| anyhow_response(anyhow!("grapheme argument is not specified")))
+    {
+        Ok(ok) => ok.clone(),
+        Err(err) => return Ok(err),
+    };
 
-    let infered = save
+    let infered = match save
         .inference(&data)
         .await
-        .or_else(|_| Err(anyhow!("cannot find data")))?;
+        .or_else(|e| Err(anyhow_response(e.context("inference error"))))
+    {
+        Ok(ok) => ok,
+        Err(e) => return Ok(e),
+    };
 
     Ok(Response::builder().body(Body::from(infered)).unwrap())
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let checkpoint: Save = bincode::deserialize(&fs::read("assets/db.bin").unwrap()).unwrap();
+    let data = Box::leak(Box::new(fs::read("assets/db.bin").unwrap()));
+    let checkpoint: Save = bincode::deserialize(data).unwrap();
     let service = ServiceBuilder::new()
         .layer(AddExtensionLayer::new(Arc::new(checkpoint)))
         // Wrap a `Service` in our middleware stack

@@ -23,6 +23,8 @@ services:
   deep_phonemizer:
     build: deep_phonemizer
     restart: always
+    ports:
+      - 8000:8000
     volumes:
       - ./deep_phonemizer/assets/model.pt:/app/assets/model.pt
   nats:

@@ -1,169 +1,150 @@
 use std::collections::HashMap;
 
-use rand::{thread_rng, Rng};
+use rand::{distributions::WeightedIndex, prelude::Distribution, thread_rng};
 use serde::{Deserialize, Serialize};
-
-use crate::french_ipa::{FrenchIPAChar, FrenchIPAWord};
+use unicode_segmentation::UnicodeSegmentation;
 
 #[derive(Debug, Serialize, Deserialize, Default)]
-pub struct TrieNode {
-    value: Option<FrenchIPAChar>,
+pub struct TrieNode<'a> {
     is_final: bool,
-    child_nodes: HashMap<FrenchIPAChar, TrieNode>,
+    #[serde(borrow = "'a")]
+    child_nodes: HashMap<&'a str, TrieNode<'a>>,
     child_count: u64,
 }
 
-impl TrieNode {
+impl<'a> TrieNode<'a> {
     // Create new node
-    pub fn new(c: FrenchIPAChar, is_final: bool) -> TrieNode {
+    pub fn new<'b>(is_final: bool) -> TrieNode<'b> {
         TrieNode {
-            value: Option::Some(c),
             is_final,
-            child_nodes: HashMap::with_capacity(FrenchIPAChar::SIZE),
+            child_nodes: HashMap::new(),
             child_count: 0,
         }
     }
 
-    pub fn new_root() -> TrieNode {
+    pub fn new_root<'b>() -> TrieNode<'b> {
         TrieNode {
-            value: Option::None,
             is_final: false,
-            child_nodes: HashMap::with_capacity(FrenchIPAChar::SIZE),
+            child_nodes: HashMap::new(),
             child_count: 0,
         }
     }
 }
 
 #[derive(Debug, Serialize, Deserialize, Default)]
-pub struct Trie {
-    root_node: Box<TrieNode>,
+pub struct Trie<'a> {
+    #[serde(borrow = "'a")]
+    root_node: Box<TrieNode<'a>>,
 }
 
-impl Trie {
+impl<'a> Trie<'a> {
     // Create a TrieStruct
-    pub fn new() -> Trie {
+    pub fn new<'b>() -> Trie<'b> {
         Trie {
             root_node: Box::new(TrieNode::new_root()),
         }
     }
 
     // Insert a string
-    pub fn insert(&mut self, char_list: FrenchIPAWord) {
+    pub fn insert(&mut self, char_list: &'a str) {
         let mut current_node: &mut TrieNode = self.root_node.as_mut();
-        let mut last_match = 0;
+        let iterator = char_list.graphemes(true);
+        let mut create = false;
 
+        current_node.child_count += 1;
         // Find the minimum existing math
-        for letter_counter in 0..char_list.len() {
-            if current_node
-                .child_nodes
-                .contains_key(&char_list[letter_counter])
-            {
-                current_node = current_node
-                    .child_nodes
-                    .get_mut(&char_list[letter_counter])
-                    .unwrap();
-                // we mark the node as containing our children.
-                current_node.child_count += 1;
-            } else {
-                last_match = letter_counter;
-                break;
-            }
-            last_match = letter_counter + 1;
-        }
+        for str in iterator {
+            if create == false {
+                if current_node.child_nodes.contains_key(str) {
+                    current_node = current_node.child_nodes.get_mut(str).unwrap();
+                    // we mark the node as containing our children.
+                    current_node.child_count += 1;
+                } else {
+                    create = true;
 
-        // if we found an already exsting node
-        if last_match == char_list.len() {
-            current_node.is_final = true;
-        } else {
-            for new_counter in last_match..char_list.len() {
-                let key = char_list[new_counter];
-                current_node
-                    .child_nodes
-                    .insert(key, TrieNode::new(char_list[new_counter], false));
-                current_node = current_node.child_nodes.get_mut(&key).unwrap();
-                current_node.child_count += 1;
+                    current_node.child_nodes.insert(str, TrieNode::new(false));
+                    current_node = current_node.child_nodes.get_mut(str).unwrap();
+                    current_node.child_count = 1;
+                }
+            } else {
+                current_node.child_nodes.insert(str, TrieNode::new(false));
+                current_node = current_node.child_nodes.get_mut(str).unwrap();
+                // we will only have one final node
+                current_node.child_count = 1;
             }
-            current_node.is_final = true;
         }
+        current_node.is_final = true;
     }
 
     // Find a string
-    pub fn random_starting_with(&self, prefix: FrenchIPAWord) -> Option<String> {
+    pub fn random_starting_with(&self, prefix: &str) -> Option<String> {
         let mut current_node: &TrieNode = self.root_node.as_ref();
-        let mut str = String::new();
-        let mut i = prefix.len();
+        // String for the return value
+        let mut builder = String::new();
+
+        // Iterator over each grapheme
+        let graphemes = prefix.graphemes(true).enumerate();
+
         // Descend as far as possible into the tree
-        for counter in prefix {
-            if let Some(node) = current_node.child_nodes.get(&counter) {
+        for (_, str) in graphemes {
+            // If we can descend further into the tree
+            if let Some(node) = current_node.child_nodes.get(&str) {
                 current_node = node;
-                if let Some(value) = current_node.value {
-                    str += value.to_char();
-                    i -= 1;
-                }
+                builder += str;
+                println!("going into node {}", builder);
             } else {
                 // couldn't descend fully into the tree
+                // this basically means nothing exist in the tree
+                // with this prefix
+                println!("no matches for prefix!");
                 return None;
             }
         }
 
-        println!("Found common root node {}", str);
+        println!("Found common root node {}", builder);
+        builder = String::new();
+        let mut rng = thread_rng();
 
-        // Ignore the 0-len matches
-        if i == 0 && current_node.child_nodes.len() == 0 {
-            println!("removing 0-len match");
-            return None;
-        }
-        str = String::new();
+        while current_node.child_nodes.len() != 0 {
+            // We need to choose a random child based on weights
+            let weighted = WeightedIndex::new(
+                current_node
+                    .child_nodes
+                    .iter()
+                    .map(|(_, node)| node.child_count),
+            )
+            .expect("distribution creation should be valid");
 
-        // now that we have the node we descend by respecting the probabilities
-        while current_node.child_nodes.len() != 0 && current_node.child_count > 0 {
-            println!("Descending into node {}", str);
-            let max = current_node.child_count;
-            let random_number = thread_rng().gen_range(0..max);
-            let mut increment = 0;
+            let (key, node) = current_node
+                .child_nodes
+                .iter()
+                .nth(weighted.sample(&mut rng))
+                .expect("choosed value did not exist");
+            println!("waling into node {}", key);
 
-            let mut did_change = false;
-            // find node corresponding to the node
-            for (_, node) in &current_node.child_nodes {
-                if node.child_count + increment >= random_number {
-                    println!("changing node");
-                    current_node = node;
-                    did_change = true;
-                    break;
-                } else {
-                    println!(
-                        "didn't change node: {}<{}",
-                        node.child_count + increment,
-                        random_number
-                    )
-                }
-                increment += node.child_count;
-            }
-            if did_change {
-                if let Some(value) = current_node.value {
-                    println!("added {}", value.to_char());
-                    str += value.to_char();
-                }
-            } else {
-                println!(
-                    "WARNING: DIDNT CHANGE NODE child_count={}",
-                    current_node.child_count
-                )
-            }
-            // if this node is a final node, we have a probability of using it
+            current_node = node;
+            builder += key;
+
+            // If this node is final and has childrens
             if current_node.is_final && current_node.child_count > 0 {
-                let random_number = thread_rng().gen_range(0..current_node.child_count);
-                if random_number == 0 {
+                // choose from current node or continue with childrens
+                let weighted = WeightedIndex::new(&[1, current_node.child_count])
+                    .expect("distribution seems impossible");
+
+                if weighted.sample(&mut rng) == 0 {
+                    // we choosed this node!
+                    // stop adding other characters
                     break;
                 }
             }
         }
 
-        if str == "" {
+        // If we only added
+        if builder == "" {
             return None;
         }
 
         // selected word
-        Some(str)
+        Some(builder)
     }
 }

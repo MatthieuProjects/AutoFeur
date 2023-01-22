@@ -65,7 +65,7 @@ emitter.on(
   async (message: GatewayMessageCreateDispatch["d"]) => {
     // we shall not repond to bots
     if (message.author.bot) return;
-    if (Math.random() >= 0) {
+    if (Math.random() > 0.7) {
       try {
         // Get the completed word found by the db.
         let response = await completeWord(cutWord(message.content));

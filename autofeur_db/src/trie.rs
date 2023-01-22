@@ -17,7 +17,7 @@ impl<'a> TrieNode<'a> {
     pub fn new<'b>(is_final: bool) -> TrieNode<'b> {
         TrieNode {
             is_final,
-            child_nodes: HashMap::new(),
+            child_nodes: HashMap::with_capacity(256),
             child_count: 0,
         }
     }
@@ -25,7 +25,7 @@ impl<'a> TrieNode<'a> {
     pub fn new_root<'b>() -> TrieNode<'b> {
         TrieNode {
             is_final: false,
-            child_nodes: HashMap::new(),
+            child_nodes: HashMap::with_capacity(256),
             child_count: 0,
         }
     }

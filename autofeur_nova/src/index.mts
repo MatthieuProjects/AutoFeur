@@ -65,21 +65,23 @@ emitter.on(
   async (message: GatewayMessageCreateDispatch["d"]) => {
     // we shall not repond to bots
     if (message.author.bot) return;
-    try {
-      // Get the completed word found by the db.
-      let response = await completeWord(cutWord(message.content));
+    if (Math.random() >= 0) {
+      try {
+        // Get the completed word found by the db.
+        let response = await completeWord(cutWord(message.content));
 
-      // Ignore if there is no completion
-      if (response || response === "") {
-        // Respond to the message.
-        await emitter.rest.post(Routes.channelMessages(message.channel_id), {
-          body: {
-            content: response,
-            message_reference: { message_id: message.id },
-          } as RESTPostAPIChannelMessageJSONBody,
-        });
-      }
-    } catch (e) {}
+        // Ignore if there is no completion
+        if (response || response === "") {
+          // Respond to the message.
+          await emitter.rest.post(Routes.channelMessages(message.channel_id), {
+            body: {
+              content: response,
+              message_reference: { message_id: message.id },
+            } as RESTPostAPIChannelMessageJSONBody,
+          });
+        }
+      } catch (e) {}
+    }
   }
 );
 

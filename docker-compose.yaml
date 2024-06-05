@@ -1,25 +1,25 @@
-version: "3.3"
 services:
-  autofeur_nova:
-    build: autofeur_nova
+  discordjs_bot:
+    build: discordjs
     restart: always
+    env_file: .env
     depends_on:
       - autofeur_db
-      - nats
     environment:
-      - NATS=nats
-      - REST=http://rest:8090/api
       - DB=http://autofeur_db:3000/
   
   autofeur_db:
     build: autofeur_db
     restart: always
+    ports:
+      - 3000:3000
     depends_on:
       - deep_phonemizer
     environment:
       - PHONEMIZER=http://deep_phonemizer:8000/
     volumes:
       - ./autofeur_db/assets/db.bin:/app/assets/db.bin
+  
   deep_phonemizer:
     build: deep_phonemizer
     restart: always
@@ -27,54 +27,10 @@ services:
       - 8000:8000
     volumes:
       - ./deep_phonemizer/assets/model.pt:/app/assets/model.pt
-  nats:
-    image: nats
-    restart: always
-  
-  redis:
-    image: redis
-    restart: always
-
-  cache:
-    image: ghcr.io/discordnova/nova/cache
-    restart: always
-    volumes:
-      - ./autofeur_nova/config/default.yml:/config/default.yml
-    depends_on:
-      - nats
-      - redis
-  
-  gateway0:
-    image: ghcr.io/discordnova/nova/gateway
-    restart: always
-    environment:
-      - NOVA__GATEWAY__SHARD=0
-    volumes:
-      - ./autofeur_nova/config/default.yml:/config/default.yml
-    depends_on:
-      - nats
-
-  rest:
-    image: ghcr.io/discordnova/nova/rest
-    restart: always
-    volumes:
-      - ./autofeur_nova/config/default.yml:/config/default.yml
-    depends_on:
-      - ratelimiter
-
-  webhook:
-    image: ghcr.io/discordnova/nova/webhook
-    restart: always
-    volumes:
-      - ./autofeur_nova/config/default.yml:/config/default.yml
-    depends_on:
-      - nats
-
-  ratelimiter:
-    image: ghcr.io/discordnova/nova/ratelimit
-    restart: always
-    volumes:
-      - ./autofeur_nova/config/default.yml:/config/default.yml
-    depends_on:
-      - nats
-      - redis
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

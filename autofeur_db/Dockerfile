@@ -14,7 +14,7 @@ COPY . .
 RUN cargo build --release --bin server
 
 # We do not need the Rust toolchain to run the binary!
-FROM debian:buster-slim AS runtime
+FROM debian AS runtime
 WORKDIR /app
 RUN apt-get update && apt-get install -y ca-certificates libssl-dev
 COPY --from=builder /app/target/release/server /usr/local/bin/server

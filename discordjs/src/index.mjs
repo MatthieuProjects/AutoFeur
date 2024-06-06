@@ -31,6 +31,9 @@ const cutWord = (sentence) => {
   let lastWord = sentence
     .replaceAll("?", "")
     .replaceAll("!", "")
+    .replaceAll(".", "")
+    .replaceAll(",", "")
+    .replaceAll(";", "")
     .trim()
     .split(" ")
     .slice(-1)[0]

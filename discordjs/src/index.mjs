@@ -52,7 +52,7 @@ client.on("messageCreate", async (message) => {
     let response = await completeWord(cutWord(message.cleanContent));
 
     // Ignore if there is no completion
-    if ((response || response === "") && Math.random() > 0.95) {
+    if ((response || response === "") && (Math.random() > 0.95 || message.channelId == '1248226018406301696')) {
       message.reply(response);
     }
   } catch (e) {

@@ -36,22 +36,20 @@ const cutWord = (sentence) => {
 };
 
 client.on("messageCreate", async (message) => {
-    // we shall not repond to bots
-    if (message.author.bot) return;
+  // we shall not repond to bots
+  if (message.author.bot) return;
 
-    if (Math.random() > 0.6) {
-        try {
-            // Get the completed word found by the db.
-            let response = await completeWord(cutWord(message.content));
+  try {
+    // Get the completed word found by the db.
+    let response = await completeWord(cutWord(message.content));
 
-            // Ignore if there is no completion
-            if (response || response === "") {
-              message.reply(response);
-            }
-        } catch (e) {
-          console.log(e);
-        }
+    // Ignore if there is no completion
+    if ((response || response === "") && Math.random() > 0.6) {
+      message.reply(response);
     }
+  } catch (e) {
+    console.log(e);
+  }
 })
 
 client.login(process.env.TOKEN);

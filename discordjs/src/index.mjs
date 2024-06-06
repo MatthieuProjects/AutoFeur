@@ -46,7 +46,7 @@ client.on("messageCreate", async (message) => {
     let response = await completeWord(cutWord(message.cleanContent));
 
     // Ignore if there is no completion
-    if ((response || response === "") && Math.random() > 0.6) {
+    if ((response || response === "") && Math.random() > 0.8) {
       message.reply(response);
     }
   } catch (e) {

@@ -112,7 +112,7 @@ impl<'a> Trie<'a> {
                 current_node
                     .child_nodes
                     .iter()
-                    .map(|(_, node)| node.child_count),
+                    .map(|(_, node)| node.child_count / (length + 1)),
             )
             .expect("distribution creation should be valid");
 

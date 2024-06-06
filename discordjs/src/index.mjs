@@ -1,5 +1,5 @@
 // Require the necessary discord.js classes
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, GatewayIntentBits, Message } from 'discord.js';
 import { request } from "undici";
 
 // Create a new client instance
@@ -42,6 +42,7 @@ client.on("messageCreate", async (message) => {
 
   try {
     // Get the completed word found by the db.
+    
     let response = await completeWord(cutWord(message.cleanContent));
 
     // Ignore if there is no completion

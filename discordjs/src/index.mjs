@@ -29,6 +29,9 @@ export const completeWord = (grapheme) => {
  */
 const cutWord = (sentence) => {
   let lastWord = sentence
+    .replaceAll("?", "")
+    .replaceAll("!", "")
+    .trim()
     .split(" ")
     .slice(-1)[0]
     .replaceAll(/(\s)?([^\x41-\x5A\s^\x61-\x7A^\xC0-\xFF])/g, "")
@@ -42,11 +45,11 @@ client.on("messageCreate", async (message) => {
 
   try {
     // Get the completed word found by the db.
-    
+
     let response = await completeWord(cutWord(message.cleanContent));
 
     // Ignore if there is no completion
-    if ((response || response === "") && Math.random() > 0.8) {
+    if ((response || response === "") && Math.random() > 0.95) {
       message.reply(response);
     }
   } catch (e) {

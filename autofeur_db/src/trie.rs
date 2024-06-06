@@ -105,6 +105,7 @@ impl<'a> Trie<'a> {
         builder = String::new();
         let mut rng = thread_rng();
 
+        let mut length = 0;
         while current_node.child_nodes.len() != 0 {
             // We need to choose a random child based on weights
             let weighted = WeightedIndex::new(
@@ -128,7 +129,7 @@ impl<'a> Trie<'a> {
             // If this node is final and has childrens
             if current_node.is_final && current_node.child_count > 0 {
                 // choose from current node or continue with childrens
-                let weighted = WeightedIndex::new(&[1, current_node.child_count])
+                let weighted = WeightedIndex::new(&[1, current_node.child_count / length])
                     .expect("distribution seems impossible");
 
                 if weighted.sample(&mut rng) == 0 {
@@ -137,6 +138,7 @@ impl<'a> Trie<'a> {
                     break;
                 }
             }
+            length += 1;
         }
 
         // If we only added

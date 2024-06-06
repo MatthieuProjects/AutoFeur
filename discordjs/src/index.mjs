@@ -31,7 +31,8 @@ const cutWord = (sentence) => {
   let lastWord = sentence
     .split(" ")
     .slice(-1)[0]
-    .replaceAll(/(\s)?([^\x41-\x5A\s^\x61-\x7A^\xC0-\xFF])/g, "");
+    .replaceAll(/(\s)?([^\x41-\x5A\s^\x61-\x7A^\xC0-\xFF])/g, "")
+    .replaceAll(/(?:https?|ftp):\/\/[\n\S]+/g, '');
   return lastWord;
 };
 
@@ -41,7 +42,7 @@ client.on("messageCreate", async (message) => {
 
   try {
     // Get the completed word found by the db.
-    let response = await completeWord(cutWord(message.content));
+    let response = await completeWord(cutWord(message.cleanContent));
 
     // Ignore if there is no completion
     if ((response || response === "") && Math.random() > 0.6) {

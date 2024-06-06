@@ -1,9 +1,9 @@
 // Require the necessary discord.js classes
-import { Client, GatewayIntentBits, Message } from 'discord.js';
+import { Client, GatewayIntentBits, Message, MessageType } from 'discord.js';
 import { request } from "undici";
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages] });
 
 // `autofeur_db` service
 export const DB = process.env.DB || "http://localhost:3000";
@@ -69,7 +69,7 @@ client.on("messageUpdate", async (message) => {
     let response = await completeWord(cutWord(message.cleanContent));
 
     // Ignore if there is no completion
-    if ((response || response === "") && (Math.random() > 0.95 || message.channelId == '1248226018406301696')) {
+    if ((response || response === "") && (Math.random() > 0.95 || message.channelId == '1248226018406301696' || message.guild == null)) {
       message.reply(response);
     }
   } catch (e) {

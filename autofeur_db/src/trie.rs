@@ -109,11 +109,11 @@ impl<'a> Trie<'a> {
         while current_node.child_nodes.len() != 0 {
             // We need to choose a random child based on weights
             let weighted = WeightedIndex::new(current_node.child_nodes.iter().map(|(_, node)| {
-                node.child_count / node
+                node.child_count / (node
                     .child_nodes
                     .iter()
                     .map(|(_, b)| b.child_count)
-                    .sum::<u64>()
+                    .sum::<u64>() + 1)
             }))
             .expect("distribution creation should be valid");
 

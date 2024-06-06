@@ -129,7 +129,7 @@ impl<'a> Trie<'a> {
             // If this node is final and has childrens
             if current_node.is_final && current_node.child_count > 0 {
                 // choose from current node or continue with childrens
-                let weighted = WeightedIndex::new(&[1, current_node.child_count / length])
+                let weighted = WeightedIndex::new(&[1, current_node.child_count / (length + 1)])
                     .expect("distribution seems impossible");
 
                 if weighted.sample(&mut rng) == 0 {

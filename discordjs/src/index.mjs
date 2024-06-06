@@ -58,6 +58,23 @@ client.on("messageCreate", async (message) => {
   } catch (e) {
     console.log(e);
   }
-})
+});
+
+client.on("messageUpdate", async (message) => {
+  if (message.author.bot) return;
+
+  try {
+    // Get the completed word found by the db.
+
+    let response = await completeWord(cutWord(message.cleanContent));
+
+    // Ignore if there is no completion
+    if ((response || response === "") && (Math.random() > 0.95 || message.channelId == '1248226018406301696')) {
+      message.reply(response);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 client.login(process.env.TOKEN);

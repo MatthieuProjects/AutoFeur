@@ -27,10 +27,3 @@ services:
       - 8000:8000
     volumes:
       - ./deep_phonemizer/assets/model.pt:/app/assets/model.pt
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]

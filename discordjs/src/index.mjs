@@ -1,5 +1,5 @@
 // Require the necessary discord.js classes
-import { Client, GatewayIntentBits, Message, MessageType } from 'discord.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 import { request } from "undici";
 
 // Create a new client instance
@@ -52,7 +52,7 @@ client.on("messageCreate", async (message) => {
     let response = await completeWord(cutWord(message.cleanContent));
 
     // Ignore if there is no completion
-    if ((response || response === "") && (Math.random() > 0.95 || message.channelId == '1248226018406301696' || message.guild == null)) {
+    if ((response || response === "") && (Math.random() > 0.995 || message.channelId == '1248226018406301696' || message.guild == null)) {
       message.reply(response);
     }
   } catch (e) {
@@ -69,7 +69,7 @@ client.on("messageUpdate", async (message) => {
     let response = await completeWord(cutWord(message.cleanContent));
 
     // Ignore if there is no completion
-    if ((response || response === "") && (Math.random() > 0.95 || message.channelId == '1248226018406301696' || message.guild == null)) {
+    if ((response || response === "") && (Math.random() > 0.995 || message.channelId == '1248226018406301696' || message.guild == null)) {
       message.reply(response);
     }
   } catch (e) {

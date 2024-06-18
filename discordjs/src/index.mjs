@@ -52,7 +52,7 @@ client.on("messageCreate", async (message) => {
     let response = await completeWord(cutWord(message.cleanContent));
 
     // Ignore if there is no completion
-    if ((response || response === "") && (Math.random() > 0.995 || message.channelId == '1248226018406301696' || message.guild == null)) {
+    if ((response || response === "") && (Math.random() > 0.98 || message.channelId == '1248226018406301696' || message.guild == null)) {
       message.reply(response);
     }
   } catch (e) {
@@ -69,7 +69,7 @@ client.on("messageUpdate", async (message) => {
     let response = await completeWord(cutWord(message.cleanContent));
 
     // Ignore if there is no completion
-    if ((response || response === "") && (Math.random() > 0.995 || message.channelId == '1248226018406301696' || message.guild == null)) {
+    if ((response || response === "") && (Math.random() > 0.98 || message.channelId == '1248226018406301696' || message.guild == null)) {
       message.reply(response);
     }
   } catch (e) {

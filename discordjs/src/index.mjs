@@ -32,9 +32,9 @@ const sanitizeWord = (sentence) => {
     .trim()
     .split(" ")
     .slice(-1)[0]
-    .replaceAll(/(?>\?|\!|\.|\,|\;)/g, "")
+    .replaceAll(/(\?|\!|\.|\,|\;)/g, "")
     .replaceAll(/(\s)?([^\x41-\x5A\s^\x61-\x7A^\xC0-\xFF])/g, "")
-    .replaceAll(/\<(?>[a-z]|[A-Z])+\:(?>[a-z]|[A-Z])+\:[0-9]+\>/g,)
+    .replaceAll(/\<([a-z]|[A-Z])+\:([a-z]|[A-Z])+\:[0-9]+\>/g, "")
     .replaceAll(/(?:https?|ftp):\/\/[\n\S]+/g, '');
   return lastWord;
 };

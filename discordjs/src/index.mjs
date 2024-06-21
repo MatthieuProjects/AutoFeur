@@ -54,7 +54,7 @@ const messageAction = async (message) => {
     let response = await completeWord(cleanText);
 
     // Ignore if there is no completion
-    const shouldReply = (Math.random() > 0.98 || specialChannels.includes(message.channelId) || message.guild == null);
+    const shouldReply = (Math.random() > 0.995 || specialChannels.includes(message.channelId) || message.guild == null);
     if ((response || response === "") && shouldReply) {
       message.reply(response);
     }

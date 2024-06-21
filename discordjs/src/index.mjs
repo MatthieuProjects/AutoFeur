@@ -51,7 +51,7 @@ const messageAction = async (message) => {
   if (message.author.bot) return;
   const cleanText = sanitizeWord(message.cleanContent);
   if (countChars(cleanText) > 0) {
-    let response = await completeWord();
+    let response = await completeWord(cleanText);
 
     // Ignore if there is no completion
     const shouldReply = (Math.random() > 0.98 || specialChannels.includes(message.channelId) || message.guild == null);

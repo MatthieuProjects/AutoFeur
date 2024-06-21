@@ -27,54 +27,35 @@ export const completeWord = (grapheme) => {
  * @param sentence Raw discord sentence
  * @returns The last word without any specials characters
  */
-const cutWord = (sentence) => {
+const sanitizeWord = (sentence) => {
   let lastWord = sentence
-    .replaceAll("?", "")
-    .replaceAll("!", "")
-    .replaceAll(".", "")
-    .replaceAll(",", "")
-    .replaceAll(";", "")
     .trim()
     .split(" ")
     .slice(-1)[0]
+    .replaceAll(/(?>\?|\!|\.|\,|\;)/g, "")
     .replaceAll(/(\s)?([^\x41-\x5A\s^\x61-\x7A^\xC0-\xFF])/g, "")
+    .replaceAll(/\<(?>[a-z]|[A-Z])+\:(?>[a-z]|[A-Z])+\:[0-9]+\>/g,)
     .replaceAll(/(?:https?|ftp):\/\/[\n\S]+/g, '');
   return lastWord;
 };
+const re = /([a-z]|[A-Z])+/g;
+const countChars = (str) => ((str || '').match(re) || []).length;
 
-client.on("messageCreate", async (message) => {
-  // we shall not repond to bots
+const messageAction = async (message) => {
   if (message.author.bot) return;
+  const cleanText = sanitizeWord(message.cleanContent);
 
-  try {
-    // Get the completed word found by the db.
-
-    let response = await completeWord(cutWord(message.cleanContent));
+  if (countChars(cleanText) > 0) {
+    let response = await completeWord();
 
     // Ignore if there is no completion
     if ((response || response === "") && (Math.random() > 0.98 || message.channelId == '1248226018406301696' || message.guild == null)) {
       message.reply(response);
     }
-  } catch (e) {
-    console.log(e);
   }
-});
+};
 
-client.on("messageUpdate", async (message) => {
-  if (message.author.bot) return;
-
-  try {
-    // Get the completed word found by the db.
-
-    let response = await completeWord(cutWord(message.cleanContent));
-
-    // Ignore if there is no completion
-    if ((response || response === "") && (Math.random() > 0.98 || message.channelId == '1248226018406301696' || message.guild == null)) {
-      message.reply(response);
-    }
-  } catch (e) {
-    console.log(e);
-  }
-});
+client.on("messageCreate", messageAction);
+client.on("messageUpdate", messageAction);
 
 client.login(process.env.TOKEN);

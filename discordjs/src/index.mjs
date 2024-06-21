@@ -32,24 +32,30 @@ const sanitizeWord = (sentence) => {
     .trim()
     .split(" ")
     .slice(-1)[0]
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, "")
+    .replaceAll(/(?:https?|ftp):\/\/[\n\S]+/g, "")
+    .replaceAll(/\:([a-z]|[A-Z])+\:/g, "")
     .replaceAll(/(\?|\!|\.|\,|\;)/g, "")
-    .replaceAll(/(\s)?([^\x41-\x5A\s^\x61-\x7A^\xC0-\xFF])/g, "")
-    .replaceAll(/\<([a-z]|[A-Z])+\:([a-z]|[A-Z])+\:[0-9]+\>/g, "")
-    .replaceAll(/(?:https?|ftp):\/\/[\n\S]+/g, '');
+    .replaceAll(/([^A-z])/g, "");
   return lastWord;
 };
 const re = /([a-z]|[A-Z])+/g;
 const countChars = (str) => ((str || '').match(re) || []).length;
 
+const specialChannels = [
+  "1248226018406301696"
+]
+
 const messageAction = async (message) => {
   if (message.author.bot) return;
   const cleanText = sanitizeWord(message.cleanContent);
-
   if (countChars(cleanText) > 0) {
     let response = await completeWord();
 
     // Ignore if there is no completion
-    if ((response || response === "") && (Math.random() > 0.98 || message.channelId == '1248226018406301696' || message.guild == null)) {
+    const shouldReply = (Math.random() > 0.98 || specialChannels.includes(message.channelId) || message.guild == null);
+    if ((response || response === "") && shouldReply) {
       message.reply(response);
     }
   }

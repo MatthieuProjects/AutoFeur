@@ -40,8 +40,8 @@ const sanitizeWord = (sentence) => {
     .replaceAll(/([^A-z])/g, "");
   return lastWord;
 };
-const re = /([a-z]|[A-Z])+/g;
-const countChars = (str) => ((str || '').match(re) || []).length;
+const anyTrivialCharRegex = /([a-z]|[A-Z])+/g;
+const countChars = (str) => ((str || '').match(anyTrivialCharRegex) || []).length;
 
 const specialChannels = [
   "1248226018406301696"
@@ -58,6 +58,10 @@ const messageAction = async (message) => {
     if ((response || response === "") && shouldReply) {
       message.reply(response);
     }
+  }
+
+  if (message.content.includes("@everyone")) {
+    message.reply("https://tenor.com/fr/view/muppetwiki-muppet-wiki-muppets-muppet-angry-gif-4979240094074316588");
   }
 };
 

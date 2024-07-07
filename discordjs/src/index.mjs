@@ -60,7 +60,7 @@ const messageAction = async (message) => {
     }
   }
 
-  if (message.content.includes("@everyone")) {
+  if (message.content.includes("@everyone") && message.guild === "1055126989566124083") {
     message.reply("https://tenor.com/fr/view/muppetwiki-muppet-wiki-muppets-muppet-angry-gif-4979240094074316588");
   }
 };

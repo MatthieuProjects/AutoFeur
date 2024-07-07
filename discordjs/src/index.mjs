@@ -60,7 +60,7 @@ const messageAction = async (message) => {
     }
   }
 
-  if (message.content.includes("@everyone") && (message.guild.id === "1055126989566124083" || specialChannels.includes(message.channelId))) {
+  if ((message.content.includes("@everyone") && message.guild.id === "1055126989566124083") || specialChannels.includes(message.channelId)) {
     message.reply("https://tenor.com/fr/view/muppetwiki-muppet-wiki-muppets-muppet-angry-gif-4979240094074316588");
   }
 };

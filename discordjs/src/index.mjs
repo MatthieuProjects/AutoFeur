@@ -61,7 +61,7 @@ const messageAction = async (message) => {
   }
 
   if ((message.content.includes("@everyone") && message.guild.id === "1055126989566124083") || specialChannels.includes(message.channelId)) {
-    message.reply("https://images-ext-1.discordapp.net/external/R7RnJ3X69cpLftWW0cGu5X4zfMMAaR3ycrAmGKGw7I4/https/media.tenor.com/RRnQfAKupywAAAPo/muppetwiki-muppet-wiki.mp4");
+    message.reply("https://cdn.mpgn.dev/pascontent-gabe.gif");
   }
 };
 

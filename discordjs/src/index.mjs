@@ -52,7 +52,7 @@ const messageAction = async (message) => {
   if (message.author.bot) return;
 
   counter += 1;
-
+  console.log("counter is at", counter);
   let shouldReply = (counter >= 75 || specialChannels.includes(message.channelId) || message.guild == null);
 
   if (shouldReply) {

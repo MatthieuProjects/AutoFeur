@@ -47,20 +47,29 @@ const specialChannels = [
   "1248226018406301696"
 ]
 
+let counter = 0;
 const messageAction = async (message) => {
   if (message.author.bot) return;
-  const cleanText = sanitizeWord(message.cleanContent);
-  if (countChars(cleanText) > 0) {
-    let response = await completeWord(cleanText);
 
-    // Ignore if there is no completion
-    const shouldReply = (Math.random() > 0.995 || specialChannels.includes(message.channelId) || message.guild == null);
-    if ((response || response === "") && shouldReply) {
-      message.reply(response);
+  counter += 1;
+
+  let shouldReply = (counter >= 75 || specialChannels.includes(message.channelId) || message.guild == null);
+
+  if (shouldReply) {
+    const cleanText = sanitizeWord(message.cleanContent);
+    if (countChars(cleanText) > 0) {
+      let response = await completeWord(cleanText);
+
+      // Ignore if there is no completion
+      if ((response || response === "")) {
+        message.reply(response);
+        counter = 0;
+      }
     }
   }
 
-  if ((message.content.includes("@everyone") && message.guild.id === "1055126989566124083") || specialChannels.includes(message.channelId)) {
+  let isEveryone = message.cleanContent.includes("@everyone") && message.guild.id === "1055126989566124083";
+  if (isEveryone) {
     message.reply("https://cdn.mpgn.dev/pascontent-gabe.gif");
   }
 };

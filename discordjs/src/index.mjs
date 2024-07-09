@@ -53,7 +53,8 @@ const messageAction = async (message) => {
 
   counter += 1;
   console.log("counter is at", counter);
-  let shouldReply = (counter >= 75 || specialChannels.includes(message.channelId) || message.guild == null);
+  let shouldReplyByCounter = counter >= 75;
+  let shouldReply = (shouldReplyByCounter || specialChannels.includes(message.channelId) || message.guild == null);
 
   if (shouldReply) {
     const cleanText = sanitizeWord(message.cleanContent);
@@ -63,7 +64,9 @@ const messageAction = async (message) => {
       // Ignore if there is no completion
       if ((response || response === "")) {
         message.reply(response);
-        counter = 0;
+        if (shouldReplyByCounter) {
+          counter = 0;
+        }
       }
     }
   }

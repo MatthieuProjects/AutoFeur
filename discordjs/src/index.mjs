@@ -53,7 +53,7 @@ const messageAction = async (message) => {
 
   counter += 1;
   console.log("counter is at", counter);
-  let shouldReplyByCounter = counter >= 75;
+  let shouldReplyByCounter = counter >= 50;
   let shouldReply = (shouldReplyByCounter || specialChannels.includes(message.channelId) || message.guild == null);
 
   if (shouldReply) {

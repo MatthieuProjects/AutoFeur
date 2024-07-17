@@ -57,6 +57,10 @@ const messageAction = async (message) => {
   let shouldReply = (shouldReplyByCounter || specialChannels.includes(message.channelId) || message.guild == null);
 
   if (shouldReply) {
+    let oltCounter = counter;
+    if (shouldReplyByCounter) {
+      counter = 0;
+    }
     const cleanText = sanitizeWord(message.cleanContent);
     if (countChars(cleanText) > 0) {
       let response = await completeWord(cleanText);
@@ -64,10 +68,9 @@ const messageAction = async (message) => {
       // Ignore if there is no completion
       if ((response || response === "")) {
         message.reply(response);
-        if (shouldReplyByCounter) {
-          counter = 0;
-        }
       }
+    } else if (shouldReplyByCounter) {
+      counter = oltCounter;
     }
   }
 

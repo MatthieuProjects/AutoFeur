@@ -73,10 +73,12 @@ const messageAction = async (message) => {
       counter = oltCounter;
     }
   }
-
-  let isEveryone = message.cleanContent.includes("@everyone") && message.guild.id === "1055126989566124083";
-  if (isEveryone) {
+  let isGuild = message.guild.id === "1055126989566124083";
+  if (message.cleanContent.includes("@everyone") && isGuild) {
     message.reply("https://cdn.mpgn.dev/pascontent-gabe.gif");
+  }
+  if (message.content.includes("<:quoi:1061204752542748742>") && isGuild) {
+    message.reply("<:quoi:1061204752542748742>")
   }
 };
 

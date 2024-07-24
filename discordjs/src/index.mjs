@@ -83,6 +83,6 @@ const messageAction = async (message) => {
 };
 
 client.on("messageCreate", messageAction);
-client.on("messageUpdate", messageAction);
+client.on("messageUpdate", (_, message) => messageAction(message));
 
 client.login(process.env.TOKEN);

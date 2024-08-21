@@ -44,7 +44,8 @@ const anyTrivialCharRegex = /([a-z]|[A-Z])+/g;
 const countChars = (str) => ((str || '').match(anyTrivialCharRegex) || []).length;
 
 const specialChannels = [
-  "1248226018406301696"
+  "1248226018406301696",
+  "995243987948544090"
 ]
 
 let counter = 0;

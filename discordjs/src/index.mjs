@@ -73,7 +73,7 @@ const messageAction = async (message) => {
       counter = oltCounter;
     }
   }
-  let isGuild = message.guild.id === "1055126989566124083";
+  
   if (message.cleanContent.includes("@everyone")) {
     message.reply("https://cdn.mpgn.dev/pascontent-gabe.gif");
   }

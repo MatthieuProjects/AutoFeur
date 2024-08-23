@@ -74,10 +74,7 @@ const messageAction = async (message) => {
       counter = oltCounter;
     }
   }
-  
-  if (message.cleanContent.includes("@everyone")) {
-    message.reply("https://cdn.mpgn.dev/pascontent-gabe.gif");
-  }
+
   if (message.content.includes("<:quoi:1061204752542748742>")) {
     message.reply("<:quoi:1061204752542748742>")
   }

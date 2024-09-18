@@ -79,7 +79,7 @@ const messageAction = async (message) => {
     }
   }
   
-  if (message.cleanContent.includes("@everyone") && !ignoredEveryoneChannels.includes(message.channelId)) {
+  if (message.content.includes("@everyone") && !ignoredEveryoneChannels.includes(message.channelId)) {
     message.reply("https://cdn.mpgn.dev/pascontent-gabe.gif");
   }
   if (message.content.includes("<:quoi:1061204752542748742>")) {

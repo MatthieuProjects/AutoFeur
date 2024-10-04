@@ -49,13 +49,17 @@ const specialChannels = [
 ]
 
 const ignoredEveryoneChannels = [
-    "1055130476395909210",
-    "1055126992380514337"
+    "1055130476395909210"
+]
+
+const ignoredUsers = [
+  "912367559750348802"
 ]
 
 let counter = 0;
 const messageAction = async (message) => {
   if (message.author.bot) return;
+  if (ignoredUsers.includes(message.author.id)) return;
 
   counter += 1;
   console.log("counter is at", counter);
@@ -80,7 +84,11 @@ const messageAction = async (message) => {
     }
   }
   
-  if (message.content.includes("@everyone") && !ignoredEveryoneChannels.includes(message.channelId)) {
+  if (
+      message.content.includes("@everyone") && 
+      !ignoredEveryoneChannels.includes(message.channelId) && 
+      !ignoredUsers.includes(message.author.id)
+  ) {
     message.reply("https://cdn.mpgn.dev/pascontent-gabe.gif");
   }
   if (message.content.includes("<:quoi:1061204752542748742>")) {

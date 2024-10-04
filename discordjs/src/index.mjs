@@ -49,7 +49,8 @@ const specialChannels = [
 ]
 
 const ignoredEveryoneChannels = [
-    "1055130476395909210"
+    "1055130476395909210",
+    "1055126992380514337"
 ]
 
 let counter = 0;

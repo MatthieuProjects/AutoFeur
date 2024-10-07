@@ -73,6 +73,7 @@ const messageAction = async (message) => {
       // Ignore if there is no completion
       if ((response || response === "")) {
         message.reply(response);
+        return;
       }
     } else if (shouldReplyByCounter) {
       counter = oltCounter;
@@ -81,9 +82,15 @@ const messageAction = async (message) => {
   
   if (message.content.includes("@everyone") && !ignoredEveryoneChannels.includes(message.channelId)) {
     message.reply("https://cdn.mpgn.dev/pascontent-gabe.gif");
+    return;
   }
   if (message.content.includes("<:quoi:1061204752542748742>")) {
-    message.reply("<:quoi:1061204752542748742>")
+    message.reply("<:quoi:1061204752542748742>");
+    return;
+  }
+
+  if (message.author.id === '912367559750348802') {
+    message.reply("stfu");
   }
 };
 

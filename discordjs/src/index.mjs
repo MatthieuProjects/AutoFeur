@@ -71,7 +71,7 @@ const messageAction = async (message, ctx) => {
   console.log("counter is at", messageReplyCounter);
 
   let currentTimestamp = Date.now();
-  let lastMessageTimestamp = await (message
+  let lastMessageTimestamp = (await message
     .channel
     .messages
     .fetch({

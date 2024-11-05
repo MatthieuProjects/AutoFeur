@@ -112,7 +112,7 @@ const messageAction = async (message, ctx) => {
   if (message.content.includes("@everyone") && !ignoredEveryoneChannels.includes(message.channelId)) {
     message.reply("https://cdn.mpgn.dev/pascontent-gabe.gif");
   }
-  if (message.content.includes("allo")) {
+  if (message.content.includes(" allo")) {
     message.reply("a l'huile")
   }
   if (message.content.includes("<:quoi:1061204752542748742>")) {

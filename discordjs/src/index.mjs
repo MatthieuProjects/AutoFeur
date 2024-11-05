@@ -81,7 +81,7 @@ const messageAction = async (message, ctx) => {
   let shouldReplyByCounter =
     messageReplyCounter >= Math.floor(Math.random() * 75) + 35;
   let shouldReply = (
-    (ctx == 0 && shouldReplyByTimestamp) ||
+    (ctx === Symbol.for("created") && shouldReplyByTimestamp) ||
     shouldReplyByCounter ||
     specialChannels.includes(message.channelId) ||
     message.guild == null
@@ -112,9 +112,7 @@ const messageAction = async (message, ctx) => {
     message.reply("<:quoi:1061204752542748742>")
   }
 };
-
-// Context is 0 for created and 1 for updated
-client.on("messageCreate", message => messageAction(message, 0));
-client.on("messageUpdate", (_, message) => messageAction(message, 1));
+client.on("messageCreate", message => messageAction(message, Symbol.for("created")));
+client.on("messageUpdate", (_, message) => messageAction(message, Symbol.for("updated")));
 
 client.login(process.env.TOKEN);

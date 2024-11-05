@@ -81,7 +81,7 @@ const messageAction = async (message, ctx) => {
     .last()
     .createdTimestamp;
   
-  let shouldReplyByTimestamp = currentTimestamp - lastMessageTimestamp >= 3600;
+  let shouldReplyByTimestamp = currentTimestamp - lastMessageTimestamp >= 3600000;
   let shouldReplyByCounter =
     messageReplyCounter >= Math.floor(Math.random() * 75) + 35;
   let shouldReply = (

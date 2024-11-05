@@ -85,7 +85,7 @@ const messageAction = async (message, ctx) => {
   let shouldReplyByCounter =
     messageReplyCounter >= Math.floor(Math.random() * 75) + 35;
   let shouldReply = (
-    (ctx === Symbol.for("CREATE") && shouldReplyByTimestamp) ||
+    (ctx === SYMBOL_FOR_CREATE && shouldReplyByTimestamp) ||
     shouldReplyByCounter ||
     specialChannels.includes(message.channelId) ||
     message.guild == null

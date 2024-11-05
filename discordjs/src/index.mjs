@@ -60,7 +60,7 @@ const ignoredEveryoneChannels = [
 ]
 
 let messageReplyCounter = 0;
-const messageAction = async (message) => {
+const messageAction = async (message, ctx) => {
   if (message.author.bot) return;
 
   messageReplyCounter += 1;
@@ -81,7 +81,7 @@ const messageAction = async (message) => {
   let shouldReplyByCounter =
     messageReplyCounter >= Math.floor(Math.random() * 75) + 35;
   let shouldReply = (
-    shouldReplyByTimestamp ||
+    (ctx == 0 && shouldReplyByTimestamp) ||
     shouldReplyByCounter ||
     specialChannels.includes(message.channelId) ||
     message.guild == null
@@ -113,7 +113,8 @@ const messageAction = async (message) => {
   }
 };
 
-client.on("messageCreate", messageAction);
-client.on("messageUpdate", (_, message) => messageAction(message));
+// Context is 0 for created and 1 for updated
+client.on("messageCreate", message => messageAction(message, 0));
+client.on("messageUpdate", (_, message) => messageAction(message, 1));
 
 client.login(process.env.TOKEN);

@@ -2,8 +2,19 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import { request } from "undici";
 
+// Symbol definition
+const SYMBOL_FOR_CREATE = Symbol.for("CREATE");
+const SYMBOL_FOR_UPDATE = Symbol.for("UPDATE");
+
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages] });
+const client = new Client({ intents:
+  [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.DirectMessages
+  ]
+});
 
 // `autofeur_db` service
 export const DB = process.env.DB || "http://localhost:3000";
@@ -49,22 +60,41 @@ const specialChannels = [
 ]
 
 const ignoredEveryoneChannels = [
-    "1055130476395909210"
+  "1055130476395909210"
 ]
 
-let counter = 0;
-const messageAction = async (message) => {
+let messageReplyCounter = 0;
+const messageAction = async (message, ctx) => {
   if (message.author.bot) return;
 
-  counter += 1;
-  console.log("counter is at", counter);
-  let shouldReplyByCounter = counter >= 60;
-  let shouldReply = (shouldReplyByCounter || specialChannels.includes(message.channelId) || message.guild == null);
+  messageReplyCounter += 1;
+  console.log("counter is at", messageReplyCounter);
+
+  let currentTimestamp = Date.now();
+  let lastMessageTimestamp = await message
+    .channel
+    .messages
+    .fetch({
+      limit: 2,
+      cache : false
+    })
+    .last()
+    .createdTimestamp;
+  
+  let shouldReplyByTimestamp = currentTimestamp - lastMessageTimestamp >= 3600;
+  let shouldReplyByCounter =
+    messageReplyCounter >= Math.floor(Math.random() * 75) + 35;
+  let shouldReply = (
+    (ctx === SYMBOL_FOR_CREATE && shouldReplyByTimestamp) ||
+    shouldReplyByCounter ||
+    specialChannels.includes(message.channelId) ||
+    message.guild == null
+  );
 
   if (shouldReply) {
-    let oltCounter = counter;
-    if (shouldReplyByCounter) {
-      counter = 0;
+    let oldCounter = messageReplyCounter;
+    if (shouldReplyByTimestamp || shouldReplyByCounter) {
+      messageReplyCounter = 0;
     }
     const cleanText = sanitizeWord(message.cleanContent);
     if (countChars(cleanText) > 0) {
@@ -75,7 +105,7 @@ const messageAction = async (message) => {
         message.reply(response);
       }
     } else if (shouldReplyByCounter) {
-      counter = oltCounter;
+      messageReplyCounter = oldCounter;
     }
   }
   
@@ -87,7 +117,11 @@ const messageAction = async (message) => {
   }
 };
 
-client.on("messageCreate", messageAction);
-client.on("messageUpdate", (_, message) => messageAction(message));
+client.on("messageCreate", message =>
+  messageAction(message, SYMBOL_FOR_CREATE)
+);
+client.on("messageUpdate", (_, message) =>
+  messageAction(message, SYMBOL_FOR_UPDATE)
+);
 
 client.login(process.env.TOKEN);

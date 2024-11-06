@@ -88,7 +88,8 @@ const messageAction = async (message, ctx) => {
     (ctx === SYMBOL_FOR_CREATE && shouldReplyByTimestamp) ||
     shouldReplyByCounter ||
     specialChannels.includes(message.channelId) ||
-    message.guild == null
+    message.guild == null ||
+    message.mentions.has(client.user)
   );
 
   if (shouldReply) {

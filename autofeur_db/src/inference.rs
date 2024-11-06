@@ -46,10 +46,12 @@ impl Save<'_> {
             let sub: String = characters.iter().join("");
             let inference = call_inference_service(&sub).await?;
 
-            if levenshtein(&inference, &completion) < 2 {
+            if levenshtein(&inference, &completion) < 5 {
                 found = Some(sub);
                 break;
             } else {
+                found = Some(sub);
+                break;
                 println!("did not match a={}, b={}", inference, completion)
             }
         }

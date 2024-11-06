@@ -50,8 +50,9 @@ impl Save<'_> {
                 found = Some(sub);
                 break;
             } else {
-                found = Some(sub);
-                break;
+                if found.is_none() {
+                    found = Some(sub);
+                }
                 println!("did not match a={}, b={}", inference, completion)
             }
         }

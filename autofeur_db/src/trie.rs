@@ -125,7 +125,7 @@ impl<'a> Trie<'a> {
                 .iter()
                 .nth(weighted.sample(&mut rng))
                 .expect("choosed value did not exist");
-            println!("waling into node {}", key);
+            println!("walking into node {}", key);
 
             current_node = node;
             builder += key;

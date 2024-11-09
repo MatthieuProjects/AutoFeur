@@ -59,7 +59,7 @@ const specialChannels = [
   "995243987948544090"
 ]
 
-const ignoredEveryoneChannels = [
+const ignoredChannels = [
   "1055130476395909210"
 ]
 
@@ -92,7 +92,7 @@ const messageAction = async (message, ctx) => {
     message.mentions.has(client.user)
   );
 
-  if (shouldReply) {
+  if (shouldReply && !ignoredChannels.includes(message.channelId)) {
     let oldCounter = messageReplyCounter;
     if (shouldReplyByTimestamp || shouldReplyByCounter) {
       messageReplyCounter = 0;
@@ -110,7 +110,7 @@ const messageAction = async (message, ctx) => {
     }
   }
   
-  if (message.content.includes("@everyone") && !ignoredEveryoneChannels.includes(message.channelId)) {
+  if (message.content.includes("@everyone") && !ignoredChannels.includes(message.channelId)) {
     message.reply("https://cdn.mpgn.dev/pascontent-gabe.gif");
   }
   if (message.content.includes(" allo ")) {

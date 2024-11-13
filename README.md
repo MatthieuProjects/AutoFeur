@@ -1,6 +1,7 @@
 # Autofeur
 
-Bot that responds with end of words
+# DEPRECATED: https://git.puffer.fish/?p=matthieu/gru.git;a=summary
+# gru@puffer.fish FOR PATCHES
 
 ## Structure
 
